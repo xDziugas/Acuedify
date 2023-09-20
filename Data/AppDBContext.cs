@@ -10,7 +10,5 @@ namespace Acuedify.Data
         }
 
         public DbSet<User> User { get; set; }
-
-
     }
 }

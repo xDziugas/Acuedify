@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acuedify.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20230916151112_AddUser")]
-    partial class AddUser
+    [Migration("20230920203007_UpdateQuizModel")]
+    partial class UpdateQuizModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,7 +147,7 @@ namespace Acuedify.Migrations
 
             modelBuilder.Entity("Acuedify.Models.Quiz", b =>
                 {
-                    b.HasOne("Acuedify.Models.Folder", null)
+                    b.HasOne("Acuedify.Models.Folder", "Folder")
                         .WithMany("Quizzes")
                         .HasForeignKey("FolderId");
 
@@ -156,6 +156,8 @@ namespace Acuedify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Folder");
                 });
 
             modelBuilder.Entity("Acuedify.Models.Folder", b =>

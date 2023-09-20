@@ -10,7 +10,7 @@ namespace Acuedify.Models
         [Required]
         public string? Name { get; set; }
 
-        public ICollection<Quiz>? Quizzes { get; set; } = new List<Quiz>();
-        public ICollection<Folder>? Folders { get; set; } = new List<Folder>();
+        public List<Quiz>? Quizzes { get; set; } = new List<Quiz>();
+        public List<Folder>? Folders { get; set; } = new List<Folder>();
 	}
 }

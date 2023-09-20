@@ -144,8 +144,8 @@ namespace Acuedify.Migrations
 
             modelBuilder.Entity("Acuedify.Models.Quiz", b =>
                 {
-                    b.HasOne("Acuedify.Models.Folder", null)
-                        .WithMany("Tests")
+                    b.HasOne("Acuedify.Models.Folder", "Folder")
+                        .WithMany("Quizzes")
                         .HasForeignKey("FolderId");
 
                     b.HasOne("Acuedify.Models.User", null)
@@ -153,11 +153,13 @@ namespace Acuedify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Folder");
                 });
 
             modelBuilder.Entity("Acuedify.Models.Folder", b =>
                 {
-                    b.Navigation("Tests");
+                    b.Navigation("Quizzes");
                 });
 
             modelBuilder.Entity("Acuedify.Models.Quiz", b =>

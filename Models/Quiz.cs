@@ -12,15 +12,20 @@ namespace Acuedify.Models
         [Required]
         public string? Description { get; set; }
         [Required]
-        public ICollection<Question> Questions { get; set; } = new List<Question>();
+        public List<Question> Questions { get; set; } = new List<Question>();
         [ForeignKey("UserId")]
         public int UserId { get; set; }
         [NotMapped]
         public User User { get; set; } = null!;
-
         public DateTime DateOfCreation { get; set; }
         public bool isFavorite { get; set; } = false;
 
-        //times solved etc galima daug ko
-    }
+		[ForeignKey("Folder")]
+		public int? FolderId { get; set; }
+
+		public Folder? Folder { get; set; }
+
+
+		//galima daug ko
+	}
 }

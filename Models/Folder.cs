@@ -9,7 +9,7 @@ namespace Acuedify.Models
         public int Id { get; set; }
         [Required]
         public string? Name { get; set; }
-        public ICollection<Quiz>? Tests { get; set; }
+        public List<Quiz>? Quizzes { get; set; }
         [ForeignKey("UserId")]
         public int UserId { get; set; }
         [NotMapped]

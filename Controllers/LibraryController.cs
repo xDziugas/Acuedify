@@ -1,116 +1,96 @@
-﻿using Acuedify.Data;
-using Acuedify.Models;
+﻿using Acuedify.Models;
+using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Acuedify.Controllers
 {
+    [Route("Library")]
 	public class LibraryController : Controller
 	{
-		private readonly AppDBContext _db;
-		private User? user;
+		private readonly ILibraryService _libraryService;
+
 		private int userId = 1;
 
-        public LibraryController(AppDBContext db)
+        public LibraryController(ILibraryService libraryService)
         {
-            _db = db;
+            _libraryService = libraryService;
         }
 
-
-		// GET: LibraryController
+		// GET:
 		[HttpGet]
         public ActionResult Index()
 		{
-
-			try
-			{
-				user = _db.User.Find(userId);
-			}
-			catch
-			{
-				return NotFound();
-			}
-			
-
-			if(user == null)
-			{
-				return NotFound();
-			}
-
 			//???
-			var userFolders = _db.User.Where(u => u.Id == userId).Select(u => u.Folders).FirstOrDefault();
-			var userQuizzes = _db.User.Where(u => u.Id == userId).Select(u => u.Quizzes).FirstOrDefault();
+			var userFolders = _libraryService.GetUserFolders(userId);
+			var userQuizzes = _libraryService.GetUserQuizzes(userId);
 			var favourites = new List<Quiz>();
 
-			//todo: also check folders??
-            if (userQuizzes != null) 
+			//todo: also check folders
+			if (userQuizzes == null)
 			{
-				foreach (Quiz quiz in userQuizzes)
+				return View("ErrorView", "Could not retrieve quizzes from database!");
+			}
+			
+			foreach (Quiz quiz in userQuizzes)
+			{
+				if (quiz.isFavorite)
 				{
-					if (quiz.isFavorite)
-					{
-						favourites.Add(quiz);
-					}
+					favourites.Add(quiz);
 				}
 			}
-
+			
 			LibraryDetails library = new LibraryDetails(folders: userFolders, quizzes: userQuizzes, favourites: favourites);
 
             return View(library);
 		}
 
-		//implement later
-		public ActionResult CreateFolder()
-		{ 
-			return View();
+		//GET
+		public IActionResult GetQuiz(int id)
+		{
+			var quiz = _libraryService.GetUserQuiz(userId, id);
+			return View(quiz);
 		}
 
-		// POST: edit folder/ later
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult EditFolder(int? id)
+		//POST
+		public IActionResult CreateQuiz()
 		{
 			return View();
 		}
 
-		//GET, todo: make it better
-		public IActionResult DeleteQuiz(int? id)
+		// PUT
+		[HttpPut("{id}")]
+		public IActionResult UpdateQuiz(Quiz quiz)
 		{
-			if (id == null)
+			_libraryService.UpdateUserQuiz(userId, quiz.Id, quiz); //???
+			return View();	
+		}
+
+		//GET
+		[HttpGet("{id}")]
+		public IActionResult DeleteQuiz(int id)
+		{
+			var quizToDelete = _libraryService.GetUserQuiz(userId, id);
+
+			if(quizToDelete == null)
 			{
-				return NotFound();
+				return View("ErrorView", "Could not find the quiz!");
 			}
-
-			var quizToDelete = _db.Find<Quiz>(id);
-
-			if (quizToDelete == null)
-			{
-				return NotFound();
-			}
-
+			
 			return View(quizToDelete);
 		}
 
-		// Post
-		[HttpPost]
+		// POST:
+		[HttpPost("{id}")]
 		[ValidateAntiForgeryToken]
-		public ActionResult DeleteQuiz(Quiz? obj)
+		public IActionResult DeleteConfirm(int id)
 		{
-			if (obj == null)
+			var result = _libraryService.DeleteUserQuiz(userId, id);
+			if (!result)
 			{
-				return NotFound();
+				return View("ErrorView", "Failed to delete quiz from database!");
 			}
 
-			try
-			{
-				_db.Remove<Quiz>(obj);
-				_db.SaveChanges();
-			}
-			catch
-			{
-				return View(obj);
-			}
-
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction("Index");
 		}
 	}
 }
