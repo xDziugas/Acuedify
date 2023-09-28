@@ -36,7 +36,7 @@ namespace Acuedify.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Folders");
+                    b.ToTable("Folders", (string)null);
                 });
 
             modelBuilder.Entity("Acuedify.Models.Question", b =>
@@ -62,7 +62,7 @@ namespace Acuedify.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Question", (string)null);
                 });
 
             modelBuilder.Entity("Acuedify.Models.Quiz", b =>
@@ -91,7 +91,7 @@ namespace Acuedify.Migrations
 
                     b.HasIndex("FolderId");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("Quizzes", (string)null);
                 });
 
             modelBuilder.Entity("Acuedify.Models.Question", b =>

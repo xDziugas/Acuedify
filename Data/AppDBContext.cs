@@ -11,5 +11,6 @@ namespace Acuedify.Data
 
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Folder> Folders { get; set; }
+        public DbSet<Acuedify.Models.Question> Question { get; set; } = default!;
 	}
 }
