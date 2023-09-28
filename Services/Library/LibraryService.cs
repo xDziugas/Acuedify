@@ -2,6 +2,7 @@
 using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Windows;
 
 namespace Acuedify.Services.Library
 {
@@ -14,100 +15,85 @@ namespace Acuedify.Services.Library
             _dbContext = dbContext;
         }
 
-        bool ILibraryService.CreateUserQuiz(int userId, Quiz quiz, int folderId)
+        bool ILibraryService.CreateUserQuiz(Quiz quiz) //create in folder - add later
         {
             try
             {
-                _dbContext.User
-                    .FirstOrDefault(user => user.Id == userId)
-                    ?.Quizzes
-                    ?.Add(quiz);
-
-                _dbContext.SaveChanges();
-                return true;
+                _dbContext.Quizzes.Add(quiz);
+				_dbContext.SaveChanges();
+				return true;
             }
-            catch
+            catch(Exception e)
             {
+                Console.WriteLine(e.StackTrace);
                 return false;
             }
         }
 
-        bool ILibraryService.DeleteUserQuiz(int userId, int quizId)
+        bool ILibraryService.DeleteUserQuiz(int quizId)
         {
             try
             {
-                var quizToDelete = _dbContext.User
-						.Include(user => user.Quizzes)
-						.FirstOrDefault(user => user.Id == userId)
-						?.Quizzes
-						?.FirstOrDefault(quiz => quiz.Id == quizId);
+                var quizToDelete = _dbContext.Quizzes.FirstOrDefault(quiz => quiz.Id == quizId);
 
-				if (quizToDelete == null)
+                if(quizToDelete == null)
                 {
                     return false;
                 }
 
-                _dbContext.User
-                    .FirstOrDefault(user => user.Id == userId)
-                    ?.Quizzes
-                    ?.Remove(quizToDelete);
+                _dbContext.Quizzes
+                    .Remove(quizToDelete);
 
                 _dbContext.SaveChanges();
                 return true;
             }
-            catch
+            catch(Exception e)
             {
+                Console.WriteLine(e.StackTrace);
                 return false;
             }
         }
 
-        Quiz ILibraryService.GetUserQuiz(int userId, int quizId)
+        Quiz ILibraryService.GetUserQuiz(int quizId)
         {
-            var currentQuiz = _dbContext.User
-                        .Include(user => user.Quizzes)
-                        .FirstOrDefault(user => user.Id == userId)
-                        ?.Quizzes
+            var currentQuiz = _dbContext.Quizzes
                         ?.FirstOrDefault(quiz => quiz.Id == quizId);
 
             return currentQuiz;
         }
 
-        List<Quiz> ILibraryService.GetUserQuizzes(int userId)
+        List<Quiz> ILibraryService.GetUserQuizzes()
         {
-            return _dbContext.User
-                .Include(user => user.Quizzes)
-                .FirstOrDefault(user => user.Id == userId)
-                ?.Quizzes?.ToList() ?? new List<Quiz>();
+            return _dbContext.Quizzes?.ToList() ?? new List<Quiz>();
         }
 
-        bool ILibraryService.UpdateUserQuiz(int userId, int quizId, Quiz updatedQuiz)
+        bool ILibraryService.UpdateUserQuiz(Quiz updatedQuiz)
         {
             try
             {
-                var currentQuiz = _dbContext.User
-                    .FirstOrDefault(user => user.Id == userId)
-                    ?.Quizzes
-                    ?.FirstOrDefault(quiz => quiz.Id == quizId);
+                var currentQuiz = _dbContext.Quizzes
+                    ?.FirstOrDefault(quiz => quiz.Id == updatedQuiz.Id);
 
                 if (currentQuiz == null)
+                {
                     return false;
+                }
 
-                currentQuiz = updatedQuiz;
+				_dbContext.Entry(currentQuiz).CurrentValues.SetValues(updatedQuiz); //?
+
                 _dbContext.SaveChanges();
                 return true;
             }
-            catch
-            {
-                return false;
+            catch(Exception e)
+			{
+				Console.WriteLine(e.StackTrace);
+				return false;
             }
         }
 
-        List<Folder> ILibraryService.GetUserFolders(int userId)
+        List<Folder> ILibraryService.GetUserFolders()
         {
-            return _dbContext.User
-                .Include(user => user.Folders)
-                .FirstOrDefault(user => user.Id == userId)
-                ?.Folders?.ToList() ?? new List<Folder>();
+            return _dbContext.Folders?.ToList() ?? new List<Folder>();
         }
 
     }

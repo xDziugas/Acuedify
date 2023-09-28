@@ -9,8 +9,6 @@ namespace Acuedify.Controllers
 	{
 		private readonly ILibraryService _libraryService;
 
-		private int userId = 1;
-
         public LibraryController(ILibraryService libraryService)
         {
             _libraryService = libraryService;
@@ -20,16 +18,16 @@ namespace Acuedify.Controllers
 		[HttpGet]
         public ActionResult Index()
 		{
-			//???
-			var userFolders = _libraryService.GetUserFolders(userId);
-			var userQuizzes = _libraryService.GetUserQuizzes(userId);
+
+			var userFolders = _libraryService.GetUserFolders();
+			var userQuizzes = _libraryService.GetUserQuizzes();
 			var favourites = new List<Quiz>();
 
-			//todo: also check folders
 			if (userQuizzes == null)
 			{
 				return View("ErrorView", "Could not retrieve quizzes from database!");
 			}
+
 			
 			foreach (Quiz quiz in userQuizzes)
 			{
@@ -47,7 +45,7 @@ namespace Acuedify.Controllers
 		//GET
 		public IActionResult GetQuiz(int id)
 		{
-			var quiz = _libraryService.GetUserQuiz(userId, id);
+			var quiz = _libraryService.GetUserQuiz(id);
 			return View(quiz);
 		}
 
@@ -61,7 +59,7 @@ namespace Acuedify.Controllers
 		[HttpPut("{id}")]
 		public IActionResult UpdateQuiz(Quiz quiz)
 		{
-			_libraryService.UpdateUserQuiz(userId, quiz.Id, quiz); //???
+			_libraryService.UpdateUserQuiz(quiz);
 			return View();	
 		}
 
@@ -69,7 +67,7 @@ namespace Acuedify.Controllers
 		[HttpGet("{id}")]
 		public IActionResult DeleteQuiz(int id)
 		{
-			var quizToDelete = _libraryService.GetUserQuiz(userId, id);
+			var quizToDelete = _libraryService.GetUserQuiz(id);
 
 			if(quizToDelete == null)
 			{
@@ -84,7 +82,7 @@ namespace Acuedify.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult DeleteConfirm(int id)
 		{
-			var result = _libraryService.DeleteUserQuiz(userId, id);
+			var result = _libraryService.DeleteUserQuiz(id);
 			if (!result)
 			{
 				return View("ErrorView", "Failed to delete quiz from database!");

@@ -13,19 +13,12 @@ namespace Acuedify.Models
         public string? Description { get; set; }
         [Required]
         public List<Question> Questions { get; set; } = new List<Question>();
-        [ForeignKey("UserId")]
-        public int UserId { get; set; }
-        [NotMapped]
-        public User User { get; set; } = null!;
-        public DateTime DateOfCreation { get; set; }
         public bool isFavorite { get; set; } = false;
 
-		[ForeignKey("Folder")]
-		public int? FolderId { get; set; }
+        [ForeignKey("Folder")]
+        public int? FolderId { get; set; } = null;
 
-		public Folder? Folder { get; set; }
+        public Folder? Folder { get; set; } = null;
 
-
-		//galima daug ko
 	}
 }

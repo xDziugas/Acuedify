@@ -12,6 +12,6 @@ namespace Acuedify.Models
         [Required]
         public string? Definition { get; set; }
         [ForeignKey("QuizId")]
-        public int QuizId { get; set; } //ukurk per Quiz
+        public int QuizId { get; set; }
     }
 }

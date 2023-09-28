@@ -9,6 +9,7 @@ namespace Acuedify.Data
         {
         }
 
-        public DbSet<User> User { get; set; }
-    }
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<Folder> Folders { get; set; }
+	}
 }

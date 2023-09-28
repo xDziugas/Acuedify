@@ -10,11 +10,6 @@ namespace Acuedify.Models
         [Required]
         public string? Name { get; set; }
         public List<Quiz>? Quizzes { get; set; }
-        [ForeignKey("UserId")]
-        public int UserId { get; set; }
-        [NotMapped]
-        public User User { get; set; } = null!;
-
-        private bool isFavorite { get; set; } = false;
+        
 	}
 }
