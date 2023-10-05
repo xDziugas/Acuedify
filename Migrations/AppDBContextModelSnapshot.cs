@@ -23,104 +23,104 @@ namespace Acuedify.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Acuedify.Models.Folder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Folders", (string)null);
-                });
-
-            modelBuilder.Entity("Acuedify.Models.Question", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Definition")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QuizId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Term")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("Question", (string)null);
-                });
-
-            modelBuilder.Entity("Acuedify.Models.Quiz", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("FolderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isFavorite")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FolderId");
-
-                    b.ToTable("Quizzes", (string)null);
-                });
+                b.ToTable("Folders");
+            });
 
             modelBuilder.Entity("Acuedify.Models.Question", b =>
-                {
-                    b.HasOne("Acuedify.Models.Quiz", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<string>("Definition")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<int>("QuizId")
+                    .HasColumnType("int");
+
+                b.Property<string>("Term")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("QuizId");
+
+                b.ToTable("Question");
+            });
 
             modelBuilder.Entity("Acuedify.Models.Quiz", b =>
-                {
-                    b.HasOne("Acuedify.Models.Folder", "Folder")
-                        .WithMany("Quizzes")
-                        .HasForeignKey("FolderId");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    b.Navigation("Folder");
-                });
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<int?>("FolderId")
+                    .HasColumnType("int");
+
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<bool>("isFavorite")
+                    .HasColumnType("bit");
+
+                b.HasKey("Id");
+
+                b.HasIndex("FolderId");
+
+                b.ToTable("Quizzes");
+            });
+
+            modelBuilder.Entity("Acuedify.Models.Question", b =>
+            {
+                b.HasOne("Acuedify.Models.Quiz", null)
+                    .WithMany("Questions")
+                    .HasForeignKey("QuizId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity("Acuedify.Models.Quiz", b =>
+            {
+                b.HasOne("Acuedify.Models.Folder", "Folder")
+                    .WithMany("Quizzes")
+                    .HasForeignKey("FolderId");
+
+                b.Navigation("Folder");
+            });
 
             modelBuilder.Entity("Acuedify.Models.Folder", b =>
-                {
-                    b.Navigation("Quizzes");
-                });
+            {
+                b.Navigation("Quizzes");
+            });
 
             modelBuilder.Entity("Acuedify.Models.Quiz", b =>
-                {
-                    b.Navigation("Questions");
-                });
+            {
+                b.Navigation("Questions");
+            });
 #pragma warning restore 612, 618
         }
     }
