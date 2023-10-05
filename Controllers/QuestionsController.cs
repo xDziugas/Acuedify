@@ -48,11 +48,7 @@ namespace Acuedify.Controllers
         // GET: Questions/Create
         public IActionResult Create()
         {
-            ViewBag.QuizIds = _context.Quizzes
-                .Select(q => q.Id)
-                .Select(id => new SelectListItem(id.ToString(), id.ToString()))
-                .ToList();
-
+            ViewBag.QuizIds = GetQuizIdsAsSelectListItems();
             return View();
         }
 
@@ -85,9 +81,12 @@ namespace Acuedify.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.QuizIds = GetQuizIdsAsSelectListItems(question.QuizId);
+
             return View(question);
         }
-
+        
         // POST: Questions/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -164,5 +163,14 @@ namespace Acuedify.Controllers
         {
           return (_context.Question?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private List<SelectListItem> GetQuizIdsAsSelectListItems(int selectQuizId = -1)
+        {
+            return ViewBag.QuizIds = _context.Quizzes
+                .Select(q => q.Id)
+                .Select(id => new SelectListItem(id.ToString(), id.ToString(), id == selectQuizId))
+                .ToList();
+        }
+
     }
 }
