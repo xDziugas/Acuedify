@@ -20,7 +20,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 
-//builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+builder.Services.AddRazorPages();
+
 
 var app = builder.Build();
 
@@ -32,6 +33,8 @@ if (!app.Environment.IsDevelopment())
 	app.UseHsts();
 }
 
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -39,8 +42,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapRazorPages();
+});
 
 app.Run();
