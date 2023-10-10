@@ -117,7 +117,7 @@ namespace Acuedify.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Edit", "Quizzes", new { id = question.QuizId });
             }
             return View(question);
         }
