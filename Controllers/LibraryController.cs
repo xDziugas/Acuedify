@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Acuedify.Controllers
 {
-    [Route("Library")]
+	[Route("Library")]
 	public class LibraryController : Controller
 	{
 		private readonly ILibraryService _libraryService;
 
-        public LibraryController(ILibraryService libraryService)
-        {
-            _libraryService = libraryService;
-        }
+		public LibraryController(ILibraryService libraryService)
+		{
+			_libraryService = libraryService;
+		}
 
 		// GET:
 		[HttpGet]
-        public ActionResult Index()
+		public ActionResult Index()
 		{
 
 			var userFolders = _libraryService.GetUserFolders();
@@ -28,7 +28,7 @@ namespace Acuedify.Controllers
 				return View("ErrorView", "Could not retrieve quizzes from database!");
 			}
 
-			
+
 			foreach (Quiz quiz in userQuizzes)
 			{
 				if (quiz.isFavorite)
@@ -36,10 +36,10 @@ namespace Acuedify.Controllers
 					favourites.Add(quiz);
 				}
 			}
-			
+
 			LibraryDetails library = new LibraryDetails(folders: userFolders, quizzes: userQuizzes, favourites: favourites);
 
-            return View(library);
+			return View(library);
 		}
 
 		//GET
@@ -60,7 +60,7 @@ namespace Acuedify.Controllers
 		public IActionResult UpdateQuiz(Quiz quiz)
 		{
 			_libraryService.UpdateUserQuiz(quiz);
-			return View();	
+			return View();
 		}
 
 		//GET
@@ -69,11 +69,11 @@ namespace Acuedify.Controllers
 		{
 			var quizToDelete = _libraryService.GetUserQuiz(id);
 
-			if(quizToDelete == null)
+			if (quizToDelete == null)
 			{
 				return View("ErrorView", "Could not find the quiz!");
 			}
-			
+
 			return View(quizToDelete);
 		}
 

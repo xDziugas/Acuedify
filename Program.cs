@@ -23,15 +23,15 @@ builder.Services.AddScoped<IPlayingService, PlayingService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set the session timeout as needed
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+	options.IdleTimeout = TimeSpan.FromMinutes(30); // Set the session timeout as needed
+	options.Cookie.HttpOnly = true;
+	options.Cookie.IsEssential = true;
 });
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
-    options.CheckConsentNeeded = context => true;
-    options.MinimumSameSitePolicy = SameSiteMode.None;
+	options.CheckConsentNeeded = context => true;
+	options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
 //builder.Services.AddRazorPages().AddRazorRuntimeCompilation();

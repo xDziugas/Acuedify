@@ -35,11 +35,6 @@ namespace Acuedify.Services.Playing
 				return false;
 			}
 
-			if (details.CurrentIndex >= details.Quiz.Questions.Count())
-			{
-				return false;
-			}
-
 			return true;
 		}
 

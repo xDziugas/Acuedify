@@ -4,7 +4,7 @@
 	{
 		private static Random rng = new Random();
 
-		public static void Shuffle<T> (this List<T> list)
+		public static void Shuffle<T>(this List<T> list)
 		{
 			int n = list.Count;
 			while (n > 1)

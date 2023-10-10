@@ -71,7 +71,8 @@
 		<tbody>
 			@foreach (var quiz in Model.Quizzes)
 			{
-				if (quiz.FolderId != null) continue; <!-- No dupes -->
+				if (quiz.FolderId != null) continue;
+				<!-- No dupes -->
 				<tr>
 					<td>@quiz.Title</td>
 					<td>@quiz.Description</td>
@@ -95,5 +96,5 @@
 				</tr>
 			}
 		</tbody>
-	</table>		
+	</table>
 </div>

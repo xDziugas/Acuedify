@@ -13,7 +13,6 @@
 .header-container {
     flex-wrap: nowrap;
     display: flex;
-    
 }
 
 .timer {
@@ -165,4 +164,15 @@
     border: 1px solid white;
     border-radius: 3px;
     visibility: visible;
+}
+
+.btn-back-to-library {
+    margin-left: 10px;
+    border: 1px solid white;
+    border-radius: 3px;
+    visibility: visible;
+}
+
+.progress-bar-animated {
+    animation: 1s linear infinite progress-bar-stripes;
 }
