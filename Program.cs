@@ -1,6 +1,8 @@
 using Acuedify.Data;
 using Acuedify.Services.Library;
+using Acuedify.Services.Playing;
 using Acuedify.Services.Library.Interfaces;
+using Acuedify.Services.Playing.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -16,6 +18,8 @@ builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(
 	));
 
 builder.Services.AddScoped<ILibraryService, LibraryService>();
+builder.Services.AddScoped<IPlayingService, PlayingService>();
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {

@@ -32,6 +32,8 @@ namespace Acuedify.Controllers
                 var flashcardSet = _libraryService.GetUserQuiz(quizId);
 				var flashcards = _libraryService.GetQuizQuestions(quizId);
 
+                flashcards.Shuffle();
+
 				if (flashcards == null)
 				{
 					return View("ErrorView", "no quiz found by id");
@@ -63,7 +65,7 @@ namespace Acuedify.Controllers
 					details: details
 					);
 
-                if (_playingService.isValid(details))
+                if (!_playingService.isValid(details))
                 {
 					return View("ErrorView", "quiz is null or quiz is finished");
 				}
