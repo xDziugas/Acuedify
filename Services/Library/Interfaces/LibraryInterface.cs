@@ -10,5 +10,6 @@ namespace Acuedify.Services.Library.Interfaces
         bool CreateUserQuiz(Quiz quiz);
         bool UpdateUserQuiz(Quiz updatedQuiz);
         bool DeleteUserQuiz(int quizId);
+        List<Question> GetQuizQuestions(int quizId);
     }
 }

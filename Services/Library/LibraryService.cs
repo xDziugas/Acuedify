@@ -96,5 +96,12 @@ namespace Acuedify.Services.Library
             return _dbContext.Folders?.ToList() ?? new List<Folder>();
         }
 
+        List<Question> ILibraryService.GetQuizQuestions(int quizId)
+        {
+            var questions = (List<Question>) _dbContext.Quizzes
+                .Where(quiz => quiz.Id == quizId).SelectMany(quiz => quiz.Questions).ToList();
+
+            return questions;
+        }
     }
 }
