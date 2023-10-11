@@ -9,7 +9,8 @@ namespace Acuedify.Data
 		{
 		}
 
-		public DbSet<Quiz> Quizzes { get; set; }
-		public DbSet<Folder> Folders { get; set; }
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<Folder> Folders { get; set; }
+        public DbSet<Question> Question { get; set; } = default!;
 	}
 }
