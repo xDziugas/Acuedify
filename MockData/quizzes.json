@@ -1,0 +1,109 @@
+[
+  {
+    "Title": "Simple Quiz",
+    "Description": "Simple Quiz Description",
+    "isFavorite": false,
+    "Questions": [
+      {
+        "Term": "Simple Question 1",
+        "Definition": "Simple Answer 1"
+      },
+      {
+        "Term": "Simple Question 2",
+        "Definition": "Simple Answer 2"
+      },
+      {
+        "Term": "Simple Question 3",
+        "Definition": "Simple Answer 3"
+      },
+      {
+        "Term": "Simple Question 4",
+        "Definition": "Simple Answer 4"
+      },
+      {
+        "Term": "Simple Question 5",
+        "Definition": "Simple Answer 5"
+      }
+    ]
+  },
+  {
+    "Title": "Favorite Quiz",
+    "Description": "Favorite Quiz Description",
+    "isFavorite": true,
+    "Questions": [
+      {
+        "Term": "Favorite Question 1",
+        "Definition": "Favorite Answer 1"
+      },
+      {
+        "Term": "Favorite Question 2",
+        "Definition": "Favorite Answer 2"
+      },
+      {
+        "Term": "Favorite Question 3",
+        "Definition": "Favorite Answer 3"
+      },
+      {
+        "Term": "Favorite Question 4",
+        "Definition": "Favorite Answer 4"
+      }
+    ]
+  },
+  {
+    "Title": "Long Quiz",
+    "Description": "Long Quiz Description",
+    "isFavorite": false,
+    "Questions": [
+      {
+        "Term": "Long Question 1",
+        "Definition": "Long Answer 1"
+      },
+      {
+        "Term": "Long Question 2",
+        "Definition": "Long Answer 2"
+      },
+      {
+        "Term": "Long Question 3",
+        "Definition": "Long Answer 3"
+      },
+      {
+        "Term": "Long Question 4",
+        "Definition": "Long Answer 4"
+      },
+      {
+        "Term": "Long Question 5",
+        "Definition": "Long Answer 5"
+      },
+      {
+        "Term": "Long Question 6",
+        "Definition": "Long Answer 6"
+      },
+      {
+        "Term": "Long Question 7",
+        "Definition": "Long Answer 7"
+      },
+      {
+        "Term": "Long Question 8",
+        "Definition": "Long Answer 8"
+      },
+      {
+        "Term": "Long Question 9",
+        "Definition": "Long Answer 9"
+      },
+      {
+        "Term": "Long Question 10",
+        "Definition": "Long Answer 10"
+      },
+      {
+        "Term": "Long Question 11",
+        "Definition": "Long Answer 11"
+      }
+    ]
+  },
+  {
+    "Title": "Empty Quiz",
+    "Description": "Quiz Description",
+    "isFavorite": false,
+    "Questions": []
+  }
+]
