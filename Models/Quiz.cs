@@ -20,5 +20,5 @@ namespace Acuedify.Models
 
         public Folder? Folder { get; set; } = null;
 
-	}
+    }
 }

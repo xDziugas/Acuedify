@@ -1,6 +1,8 @@
 using Acuedify.Data;
 using Acuedify.Services.Library;
+using Acuedify.Services.Playing;
 using Acuedify.Services.Library.Interfaces;
+using Acuedify.Services.Playing.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
@@ -19,6 +21,21 @@ builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDBContext>();
 
 builder.Services.AddScoped<ILibraryService, LibraryService>();
+builder.Services.AddScoped<IPlayingService, PlayingService>();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+	options.IdleTimeout = TimeSpan.FromMinutes(30); // Set the session timeout as needed
+	options.Cookie.HttpOnly = true;
+	options.Cookie.IsEssential = true;
+});
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+	options.CheckConsentNeeded = context => true;
+	options.MinimumSameSitePolicy = SameSiteMode.None;
+});
 
 builder.Services.AddRazorPages();
 
@@ -37,6 +54,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 
