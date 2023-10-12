@@ -102,7 +102,7 @@
   },
   {
     "Title": "Empty Quiz",
-    "Description": "Quiz Description",
+    "Description": "Empty Quiz Description",
     "isFavorite": false,
     "Questions": []
   }
