@@ -15,6 +15,31 @@ namespace Acuedify.Controllers
             _context = context;
         }
 
+
+        // GET: Quizzes/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Quizzes/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Title,Description,isFavorite")] Quiz quiz)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(quiz);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Library");
+            }
+
+            return View(quiz);
+        }
+
+
         // GET: Quizzes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -73,7 +98,7 @@ namespace Acuedify.Controllers
 
         private bool QuizExists(int id)
         {
-          return (_context.Quizzes?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Quizzes?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
