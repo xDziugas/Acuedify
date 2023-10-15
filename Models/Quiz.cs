@@ -20,5 +20,7 @@ namespace Acuedify.Models
 
         public Folder? Folder { get; set; } = null;
 
+        public string? UserId { get; set; } = null;
+
     }
 }
