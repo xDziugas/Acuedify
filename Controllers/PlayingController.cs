@@ -2,12 +2,15 @@
 using Acuedify.Services.Library.Interfaces;
 using Acuedify.Services.Playing;
 using Acuedify.Services.Playing.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Acuedify.Controllers
 {
 	[Route("Play")]
-	public class PlayingController : Controller
+
+    [Authorize]
+    public class PlayingController : Controller
 	{
 		private readonly ILibraryService _libraryService;
 		private readonly IPlayingService _playingService;

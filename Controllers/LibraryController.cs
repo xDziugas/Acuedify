@@ -1,10 +1,12 @@
 ﻿using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Acuedify.Controllers
 {
 	[Route("Library")]
+	[Authorize]
 	public class LibraryController : Controller
 	{
 		private readonly ILibraryService _libraryService;

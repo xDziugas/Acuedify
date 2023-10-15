@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Acuedify.Data;
 using Acuedify.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Acuedify.Controllers
 {
+
+    [Authorize]
     public class QuestionsController : Controller
     {
         private readonly AppDBContext _context;

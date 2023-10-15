@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrapSlate.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Acuedify.styles.css" asp-append-version="true" />
+    @if (!SignInManager.IsSignedIn(User)){
+        <style>.auth-disable{border: 12px; background-color: #888888;}</style>
+    }
 </head>
 <body>
     <header>
@@ -29,24 +32,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Library" asp-action="Index">Library</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Questions" asp-action="Index">Questions</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a style="background-color: #888;" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Library</a>
-                            </li>
-                            <li class="nav-item">
-                                <a style="background-color: #888;" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Questions</a>
-                            </li>
-                        }
+                        
+                        <li class="auth-disable nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Library" asp-action="Index">Library</a>
+                        </li>
+                        <li class="auth-disable nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Questions" asp-action="Index">Questions</a>
+                        </li>
 
                     </ul>
                 </div>
