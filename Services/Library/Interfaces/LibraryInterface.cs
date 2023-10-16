@@ -4,7 +4,7 @@ namespace Acuedify.Services.Library.Interfaces
 {
 	public interface ILibraryService
 	{
-		List<Quiz> GetUserQuizzes();
+		List<Quiz> GetUserQuizzes(String id);
 		Quiz GetUserQuiz(int quizId);
 		List<Folder> GetUserFolders();
 		bool CreateUserQuiz(Quiz quiz);

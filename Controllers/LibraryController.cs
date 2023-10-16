@@ -1,7 +1,9 @@
 ﻿using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Acuedify.Controllers
 {
@@ -10,24 +12,31 @@ namespace Acuedify.Controllers
 	public class LibraryController : Controller
 	{
 		private readonly ILibraryService _libraryService;
+        private readonly UserManager<AcuedifyUser> _userManager;
+        private readonly SignInManager<AcuedifyUser> _signInManager;
 
-		public LibraryController(ILibraryService libraryService)
+        public LibraryController(ILibraryService libraryService, 
+			UserManager<AcuedifyUser> userManager,
+            SignInManager<AcuedifyUser> signInManager)
 		{
 			_libraryService = libraryService;
+            _userManager = userManager;
+            _signInManager = signInManager;
 		}
 
 		// GET:
 		[HttpGet]
 		public ActionResult Index()
 		{
-
-			var userFolders = _libraryService.GetUserFolders();
-			var userQuizzes = _libraryService.GetUserQuizzes();
+			String userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+;
+            var userFolders = _libraryService.GetUserFolders();
+			var userQuizzes = _libraryService.GetUserQuizzes(userID);
 			var favourites = new List<Quiz>();
 
 			if (userQuizzes == null)
 			{
-				return View("ErrorView", "Could not retrieve quizzes from database!");
+				return View("ErrorView", "User has no quizzes");
 			}
 
 
@@ -45,9 +54,11 @@ namespace Acuedify.Controllers
 		}
 
 		//GET
-		public IActionResult GetQuiz(int id)
+		public async Task<IActionResult> GetQuiz(int id)
 		{
-			var quiz = _libraryService.GetUserQuiz(id);
+			var user = await _userManager.GetUserAsync(User);
+
+            var quiz = _libraryService.GetUserQuiz(id);
 			return View(quiz);
 		}
 

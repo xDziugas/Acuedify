@@ -62,9 +62,11 @@ namespace Acuedify.Services.Library
 			return currentQuiz;
 		}
 
-		List<Quiz> ILibraryService.GetUserQuizzes()
+		List<Quiz> ILibraryService.GetUserQuizzes(String id)
 		{
-			return _dbContext.Quizzes?.ToList() ?? new List<Quiz>();
+			return _dbContext.Quizzes?
+				.Where(s => s.UserId == id)
+				.ToList() ?? new List<Quiz>();
 		}
 
 		bool ILibraryService.UpdateUserQuiz(Quiz updatedQuiz)
