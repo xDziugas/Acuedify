@@ -13,8 +13,6 @@ namespace Acuedify.Controllers
 	public class LibraryController : Controller
 	{
 		private readonly ILibraryService _libraryService;
-        private readonly UserManager<AcuedifyUser> _userManager;
-        private readonly SignInManager<AcuedifyUser> _signInManager;
 		private String? userId;
 
         public LibraryController(ILibraryService libraryService)
@@ -51,7 +49,7 @@ namespace Acuedify.Controllers
 		}
 
 		//GET
-		public async Task<IActionResult> GetQuiz(int id)
+		public IActionResult GetQuiz(int id)
 		{
             if ((userId = getUserId()) == null) { return errorView(); }
 
@@ -80,7 +78,7 @@ namespace Acuedify.Controllers
 
 		//GET
 		[HttpGet("{id}")]
-		public IActionResult DeleteQuiz(int id)
+		public IActionResult DeleteQuiz(int id) // might be able to delete without auth idk im half asleep
 		{
             if ((userId = getUserId()) == null) { return errorView(); }
 

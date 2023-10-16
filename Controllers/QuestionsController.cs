@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Acuedify.Data;
 using Acuedify.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Acuedify.Controllers
 {
@@ -16,6 +17,8 @@ namespace Acuedify.Controllers
     public class QuestionsController : Controller
     {
         private readonly AppDBContext _context;
+        String? userId;
+
 
         public QuestionsController(AppDBContext context)
         {
@@ -25,20 +28,26 @@ namespace Acuedify.Controllers
         // GET: Questions
         public async Task<IActionResult> Index()
         {
-              return _context.Question != null ? 
-                          View(await _context.Question.ToListAsync()) :
-                          Problem("Entity set 'AppDBContext.Question'  is null.");
+            if ((userId = getUserId()) == null) { return authErrorView(); }
+            return _context.Question != null ?
+                          View(await _context
+                          .Question
+                          .Where(q => q.UserId == userId)
+                          .ToListAsync()) 
+                          :Problem("Entity set 'AppDBContext.Question'  is null.");
         }
 
         // GET: Questions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if ((userId = getUserId()) == null) { return authErrorView(); }
             if (id == null || _context.Question == null)
             {
                 return NotFound();
             }
 
             var question = await _context.Question
+                .Where(q => q.UserId == userId)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (question == null)
             {
@@ -51,7 +60,7 @@ namespace Acuedify.Controllers
         // GET: Questions/Create
         public IActionResult Create()
         {
-            ViewBag.QuizIds = GetQuizIdsAsSelectListItems();
+            ViewBag.QuizIds = GetQuizIdsAsSelectListItems(); //what this do?
             return View();
         }
 
@@ -59,11 +68,14 @@ namespace Acuedify.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Term,Definition,QuizId")] Question question)
+        [ValidateAntiForgeryToken] // what this do
+        public async Task<IActionResult> Create([Bind("Id,Term,Definition,QuizId,UserId")] Question question)
         {
+            if ((userId = getUserId()) == null) { return authErrorView(); }
+
             if (ModelState.IsValid)
             {
+                question.UserId = userId;
                 _context.Add(question);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -74,6 +86,8 @@ namespace Acuedify.Controllers
         // GET: Questions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if ((userId = getUserId()) == null) { return authErrorView(); }
+
             if (id == null || _context.Question == null)
             {
                 return NotFound();
@@ -95,9 +109,9 @@ namespace Acuedify.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Term,Definition,QuizId")] Question question)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Term,Definition,QuizId,UserId")] Question question) //Hows this different from the previous Edit comment pls
         {
-            if (id != question.Id)
+            if (id != question.Id) // maybe there is a better error page than 404
             {
                 return NotFound();
             }
@@ -106,12 +120,13 @@ namespace Acuedify.Controllers
             {
                 try
                 {
+                    question.UserId = userId;
                     _context.Update(question);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!QuestionExists(question.Id))
+                    if (!QuestionExists(question.Id)) //maybe question you tried to edit doesnt exist?
                     {
                         return NotFound();
                     }
@@ -128,6 +143,8 @@ namespace Acuedify.Controllers
         // GET: Questions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if ((userId = getUserId()) == null) { return authErrorView(); } //auth check
+
             if (id == null || _context.Question == null)
             {
                 return NotFound();
@@ -137,8 +154,11 @@ namespace Acuedify.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (question == null)
             {
-                return NotFound();
+                return View("ErrorView", "Question not foun");
             }
+
+            // Ownership check
+            if (question.UserId != userId){ return View("ErrorView", "You dont have access to this question"); } 
 
             return View(question);
         }
@@ -146,8 +166,9 @@ namespace Acuedify.Controllers
         // POST: Questions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id) 
         {
+            //no need for auth check since DeleteConfirmed accessible only from authchecked Delete action, no?
             if (_context.Question == null)
             {
                 return Problem("Entity set 'AppDBContext.Question'  is null.");
@@ -157,17 +178,18 @@ namespace Acuedify.Controllers
             {
                 _context.Question.Remove(question);
             }
+
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool QuestionExists(int id)
+        private bool QuestionExists(int id) //idk if needs auth?
         {
           return (_context.Question?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private List<SelectListItem> GetQuizIdsAsSelectListItems(int selectQuizId = -1)
+        private List<SelectListItem> GetQuizIdsAsSelectListItems(int selectQuizId = -1) //idk if needs auth?
         {
             return ViewBag.QuizIds = _context.Quizzes
                 .Select(q => q.Id)
@@ -175,5 +197,14 @@ namespace Acuedify.Controllers
                 .ToList();
         }
 
+        private String? getUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+
+        private ViewResult authErrorView()
+        {
+            return View("ErrorView", "You are not logged in (userId = null)");
+        }
     }
 }
