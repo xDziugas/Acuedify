@@ -4,6 +4,7 @@ using Acuedify.Services.Playing;
 using Acuedify.Services.Playing.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Acuedify.Controllers
 {
@@ -14,23 +15,30 @@ namespace Acuedify.Controllers
 	{
 		private readonly ILibraryService _libraryService;
 		private readonly IPlayingService _playingService;
+		String? userId;
+		String? validCheckResult;
 
-		public PlayingController(ILibraryService libraryService, IPlayingService playingService)
+        public PlayingController(ILibraryService libraryService, IPlayingService playingService)
 		{
 			_libraryService = libraryService;
 			_playingService = playingService;
 		}
 
-		// GET:
-		[HttpGet]
-		public IActionResult Index(int quizId, int questionId)
+        // GET:
+        [HttpGet]
+        public IActionResult Index(int quizId, int questionId)
 		{
-			PlayDetails details;
+			userId = getUserId();
+			if (userId == null) { return authErrorView(); }
+			if (_libraryService.GetUserQuiz(quizId, userId) == null) { return View("ErrorView", "You do not have access to this quiz"); }
 
-			if (questionId == 0) // Initial loading of the screen with the first flashcard
+            PlayDetails details;
+
+            if (questionId == 0) // Initial loading of the screen with the first flashcard
 			{
-				var flashcardSet = _libraryService.GetUserQuiz(quizId);
-				var flashcards = _libraryService.GetQuizQuestions(quizId);
+
+                var flashcardSet = _libraryService.GetUserQuiz(quizId, userId);
+				var flashcards = _libraryService.GetQuizQuestions(quizId, userId);
 
 				if (flashcards == null)
 				{
@@ -66,13 +74,22 @@ namespace Acuedify.Controllers
 					details: details
 					);
 
-				if (!_playingService.isValid(details))
+				if ((validCheckResult = _playingService.isValid(details)) != null)
 				{
-					return View("ErrorView", "quiz is null");
+					return View("ErrorView", validCheckResult);
 				}
 			}
 
 			return View(details);
 		}
-	}
+        private String? getUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+
+        private ViewResult authErrorView()
+        {
+            return View("ErrorView", "You are not logged in (userId = null)");
+        }
+    }
 }

@@ -3,6 +3,7 @@ using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using System.Security.Claims;
 
 namespace Acuedify.Controllers
@@ -14,30 +15,26 @@ namespace Acuedify.Controllers
 		private readonly ILibraryService _libraryService;
         private readonly UserManager<AcuedifyUser> _userManager;
         private readonly SignInManager<AcuedifyUser> _signInManager;
+		private String? userId;
 
-        public LibraryController(ILibraryService libraryService, 
-			UserManager<AcuedifyUser> userManager,
-            SignInManager<AcuedifyUser> signInManager)
+        public LibraryController(ILibraryService libraryService)
 		{
 			_libraryService = libraryService;
-            _userManager = userManager;
-            _signInManager = signInManager;
 		}
 
 		// GET:
 		[HttpGet]
 		public ActionResult Index()
 		{
-			String userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-;
-            var userFolders = _libraryService.GetUserFolders();
-			var userQuizzes = _libraryService.GetUserQuizzes(userID);
-			var favourites = new List<Quiz>();
+            if ((userId = getUserId()) == null) { return errorView(); }
 
-			if (userQuizzes == null)
-			{
-				return View("ErrorView", "User has no quizzes");
-			}
+            var userFolders = _libraryService.GetUserFolders(userId);
+
+			var userQuizzes = _libraryService.GetUserQuizzes(userId);
+            if (userQuizzes == null) { return View("ErrorView", "User has no quizzes"); }
+
+            var favourites = new List<Quiz>();
+
 
 
 			foreach (Quiz quiz in userQuizzes)
@@ -56,9 +53,12 @@ namespace Acuedify.Controllers
 		//GET
 		public async Task<IActionResult> GetQuiz(int id)
 		{
-			var user = await _userManager.GetUserAsync(User);
+            if ((userId = getUserId()) == null) { return errorView(); }
 
-            var quiz = _libraryService.GetUserQuiz(id);
+
+            var quiz = _libraryService.GetUserQuiz(id, userId);
+			if (quiz == null) { return View("ErrorView", "Quiz not found"); }
+
 			return View(quiz);
 		}
 
@@ -69,10 +69,12 @@ namespace Acuedify.Controllers
 		}
 
 		// PUT
-		[HttpPut("{id}")]
+		[HttpPut("{id}")] // needed??
 		public IActionResult UpdateQuiz(Quiz quiz)
 		{
-			_libraryService.UpdateUserQuiz(quiz);
+            if ((userId = getUserId()) == null) { return errorView(); }
+
+            _libraryService.UpdateUserQuiz(quiz, userId);
 			return View();
 		}
 
@@ -80,7 +82,9 @@ namespace Acuedify.Controllers
 		[HttpGet("{id}")]
 		public IActionResult DeleteQuiz(int id)
 		{
-			var quizToDelete = _libraryService.GetUserQuiz(id);
+            if ((userId = getUserId()) == null) { return errorView(); }
+
+            var quizToDelete = _libraryService.GetUserQuiz(id, userId);
 
 			if (quizToDelete == null)
 			{
@@ -95,7 +99,9 @@ namespace Acuedify.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult DeleteConfirm(int id)
 		{
-			var result = _libraryService.DeleteUserQuiz(id);
+            if ((userId = getUserId()) == null) { return errorView(); }
+
+            var result = _libraryService.DeleteUserQuiz(id, userId);
 			if (!result)
 			{
 				return View("ErrorView", "Failed to delete quiz from database!");
@@ -103,5 +109,15 @@ namespace Acuedify.Controllers
 
 			return RedirectToAction("Index");
 		}
+
+		private String? getUserId()
+		{
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+
+		private ViewResult errorView()
+		{
+            return View("ErrorView", "You are not logged in (userId = null)");
+        }
 	}
 }

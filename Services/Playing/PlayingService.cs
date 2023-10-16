@@ -1,6 +1,7 @@
 ﻿using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Playing.Interfaces;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 
 namespace Acuedify.Services.Playing
@@ -12,7 +13,7 @@ namespace Acuedify.Services.Playing
 			PlayDetails details = new PlayDetails();
 
 			details.Quiz = flashcardSet;
-
+			
 			details.Quiz.Questions = flashcards;
 
 			return details;
@@ -28,14 +29,12 @@ namespace Acuedify.Services.Playing
 			session.SetObject(SessionKey, details);
 		}
 
-		bool IPlayingService.isValid(PlayDetails details)
+		String? IPlayingService.isValid(PlayDetails details)
 		{
-			if (details == null || details.Quiz == null)
-			{
-				return false;
-			}
-
-			return true;
+			if (details == null) { return "Couldn't Initialise quiz"; }
+			if (details.Quiz == null) { return "Quiz is null"; }
+			if (details.CurrentIndex > details.Quiz.Questions.Count - 1) { return "Flashcard index out of range"; }
+			return null;
 		}
 
 		List<Question> IPlayingService.ShuffleFlashcards(List<Question> flashcards)
