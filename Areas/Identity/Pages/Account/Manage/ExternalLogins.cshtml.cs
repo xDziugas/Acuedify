@@ -11,19 +11,21 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Acuedify.Models;
+
 
 namespace Acuedify.Areas.Identity.Pages.Account.Manage
 {
     public class ExternalLoginsModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly IUserStore<IdentityUser> _userStore;
+        private readonly UserManager<AcuedifyUser> _userManager;
+        private readonly SignInManager<AcuedifyUser> _signInManager;
+        private readonly IUserStore<AcuedifyUser> _userStore;
 
         public ExternalLoginsModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
-            IUserStore<IdentityUser> userStore)
+            UserManager<AcuedifyUser> userManager,
+            SignInManager<AcuedifyUser> signInManager,
+            IUserStore<AcuedifyUser> userStore)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -69,7 +71,7 @@ namespace Acuedify.Areas.Identity.Pages.Account.Manage
                 .ToList();
 
             string passwordHash = null;
-            if (_userStore is IUserPasswordStore<IdentityUser> userPasswordStore)
+            if (_userStore is IUserPasswordStore<AcuedifyUser> userPasswordStore)
             {
                 passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
             }

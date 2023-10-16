@@ -4,6 +4,7 @@ using Acuedify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acuedify.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231016094030_AddUserId8")]
+    partial class AddUserId8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace Acuedify.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Acuedify.Models.AcuedifyUser", b =>
+            modelBuilder.Entity("Acuedify.Models.AcuedefyUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -141,7 +144,7 @@ namespace Acuedify.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AcuedifyUserId")
+                    b.Property<string>("AcuedefyUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -163,7 +166,7 @@ namespace Acuedify.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AcuedifyUserId");
+                    b.HasIndex("AcuedefyUserId");
 
                     b.HasIndex("FolderId");
 
@@ -318,9 +321,9 @@ namespace Acuedify.Migrations
 
             modelBuilder.Entity("Acuedify.Models.Quiz", b =>
                 {
-                    b.HasOne("Acuedify.Models.AcuedifyUser", null)
+                    b.HasOne("Acuedify.Models.AcuedefyUser", null)
                         .WithMany("Quizzes")
-                        .HasForeignKey("AcuedifyUserId");
+                        .HasForeignKey("AcuedefyUserId");
 
                     b.HasOne("Acuedify.Models.Folder", "Folder")
                         .WithMany("Quizzes")
@@ -340,7 +343,7 @@ namespace Acuedify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Acuedify.Models.AcuedifyUser", null)
+                    b.HasOne("Acuedify.Models.AcuedefyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -349,7 +352,7 @@ namespace Acuedify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Acuedify.Models.AcuedifyUser", null)
+                    b.HasOne("Acuedify.Models.AcuedefyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -364,7 +367,7 @@ namespace Acuedify.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Acuedify.Models.AcuedifyUser", null)
+                    b.HasOne("Acuedify.Models.AcuedefyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -373,14 +376,14 @@ namespace Acuedify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Acuedify.Models.AcuedifyUser", null)
+                    b.HasOne("Acuedify.Models.AcuedefyUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Acuedify.Models.AcuedifyUser", b =>
+            modelBuilder.Entity("Acuedify.Models.AcuedefyUser", b =>
                 {
                     b.Navigation("Quizzes");
                 });

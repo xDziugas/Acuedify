@@ -6,7 +6,7 @@ using System.Reflection.Metadata;
 
 namespace Acuedify.Data
 {
-	public class AppDBContext : IdentityDbContext
+	public class AppDBContext : IdentityDbContext<AcuedifyUser>
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {

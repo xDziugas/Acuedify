@@ -1,20 +1,28 @@
 ﻿using Acuedify.Models;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace Acuedify.Data
 {
     public class MockDataInitializer
     {
-        public static void SeedQuizzes(AppDBContext context, string filePath)
+        
+
+        public static void SeedUsers(AppDBContext context, string filePath)
         {
             try
             {
-                string listOfQuizzesJson = File.ReadAllText(filePath);
-                var quizzes = JsonSerializer.Deserialize<List<Quiz>>(listOfQuizzesJson);
-                if (quizzes != null)
+                string listOfUsersJson = File.ReadAllText(filePath);
+                var users = JsonSerializer.Deserialize<List<AcuedifyUser>>(listOfUsersJson);
+                if (users != null)
                 {
-                    context.AddRange(quizzes);
+                    // WHY DOESNT THIS WORK
+                    /*context.Database.SqlQuery<int>($"DBCC CHECKIDENT ('dbo.Question', RESEED, 0);");
+                    context.Database.SqlQuery<int>($"GO");
+                    context.Database.SqlQuery<int>($"DBCC CHECKIDENT ('dbo.Quizzes', RESEED, 0);")
+                    context.Database.SqlQuery<int>($"GO");*/
+                    context.AddRange(users);
                     context.SaveChanges();
                 }
             }
@@ -23,6 +31,7 @@ namespace Acuedify.Data
                 throw;
             }
         }
+
 
     }
 }

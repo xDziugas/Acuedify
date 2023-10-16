@@ -1,4 +1,6 @@
-@inject SignInManager<IdentityUser> SignInManager
+@using Acuedify.Models;
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AcuedifyUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
