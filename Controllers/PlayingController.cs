@@ -34,7 +34,10 @@ namespace Acuedify.Controllers
 					return View("ErrorView", "no quiz found by id");
 				}
 
-				flashcards.Shuffle();
+				if(!flashcards.Any())
+				{
+					return RedirectToAction("Index", "Library");
+				}
 
 				details = _playingService.InitPlayDetails(
 					flashcards: flashcards,
