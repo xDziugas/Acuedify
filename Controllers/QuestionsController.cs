@@ -159,6 +159,29 @@ namespace Acuedify.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Questions/CreateForQuiz/3
+        public IActionResult CreateForQuiz(int id)
+        {
+            ViewBag.QuizIds = GetQuizIdsAsSelectListItems(id);
+            return View();
+        }
+
+        // POST: Questions/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateForQuiz([Bind("Term,Definition,QuizId")] Question question)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(question);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Edit", "Quizzes", new { id = question.QuizId });
+            }
+            return View(question);
+        }
+
         private bool QuestionExists(int id)
         {
           return (_context.Question?.Any(e => e.Id == id)).GetValueOrDefault();

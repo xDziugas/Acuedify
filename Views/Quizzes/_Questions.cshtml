@@ -1,7 +1,12 @@
-﻿@model List<Acuedify.Models.Question>
+﻿@model Acuedify.Models.Quiz
 
 <div>
-    <h4 class="mb-4 mt-3">Questions:</h4>
+    <h4 class="mb-2 mt-3">Questions:</h4>
+
+    <a asp-controller="Questions" asp-action="CreateForQuiz" asp-route-id=@Model.Id class="btn btn-primary mb-2">
+        Add Question
+    </a>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -11,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var question in Model)
+            @foreach (var question in Model.Questions)
             {
                 <tr>
                     <td>@question.Term</td>
