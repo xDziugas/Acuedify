@@ -1,7 +1,8 @@
-﻿@model Acuedify.Models.Question
+﻿@model QQViewModel
 
 @{
     ViewData["Title"] = "Edit";
+    var QuizNames = ViewBag.QuizNames;
 }
 
 <h1>Edit</h1>
@@ -12,21 +13,28 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Question.Id" />
+            <input type="hidden" asp-for="Question.QuizId" />
+            <input type="hidden" asp-for="Quiz.Id" />
+            <input type="hidden" asp-for="Quiz.Description" />
+            <input type="hidden" asp-for="Quiz.Questions" />
+            <input type="hidden" asp-for="Quiz.isFavorite" />
+            <input type="hidden" asp-for="Quiz.FolderId" />
+            <input type="hidden" asp-for="Quiz.Folder" />
             <div class="form-group">
-                <label asp-for="Term" class="control-label"></label>
-                <input asp-for="Term" class="form-control" />
-                <span asp-validation-for="Term" class="text-danger"></span>
+                <label asp-for="Question.Term" class="control-label"></label>
+                <input asp-for="Question.Term" class="form-control" />
+                <span asp-validation-for="Question.Term" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Definition" class="control-label"></label>
-                <input asp-for="Definition" class="form-control" />
-                <span asp-validation-for="Definition" class="text-danger"></span>
+                <label asp-for="Question.Definition" class="control-label"></label>
+                <input asp-for="Question.Definition" class="form-control" />
+                <span asp-validation-for="Question.Definition" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="QuizId" class="control-label"></label>
-                <select asp-for="QuizId" class="form-control" asp-items="ViewBag.QuizIds"></select>
-                <span asp-validation-for="QuizId" class="text-danger"></span>
+                <label asp-for="Quiz.Title" class="control-label"></label>
+                <select asp-for="Quiz.Title" class="form-control" asp-items="ViewBag.QuizNames"></select>
+                <span asp-validation-for="Quiz.Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -36,7 +44,7 @@
 </div>
 
 <div>
-    <a asp-controller="Quizzes" asp-action="Edit" asp-route-id="@Model.QuizId">Back to Quiz</a>
+    <a asp-controller="Quizzes" asp-action="Edit" asp-route-id="@Model.Quiz.Id">Back to Quiz</a>
 </div>
 
 @section Scripts {

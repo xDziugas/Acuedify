@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Acuedify.Data;
 using Acuedify.Models;
+using System.Dynamic;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Acuedify.Controllers
 {
@@ -22,9 +24,26 @@ namespace Acuedify.Controllers
         // GET: Questions
         public async Task<IActionResult> Index()
         {
-              return _context.Question != null ? 
-                          View(await _context.Question.ToListAsync()) :
-                          Problem("Entity set 'AppDBContext.Question'  is null.");
+            
+            var questionList = _context.Question != null ? 
+                await _context.Question.ToListAsync() : null;
+            if ( questionList == null ) { return View("ErrorView", "Couldn't find any questions."); }
+            var quizList = _context.Quizzes != null ?
+                await _context.Quizzes.ToListAsync() : null;
+            if (quizList == null) { return View("ErrorView", "Couldn't find any quizzes."); }
+
+            List<QQViewModel> qqmodels = new List<QQViewModel>(); ;
+            foreach (Question question in questionList)
+            {
+                Quiz? quiz = quizList.FirstOrDefault(quiz => quiz.Id == question.QuizId);
+                if(quiz == null) { return View("ErrorView", "Couldnt find a quiz for each question."); }
+                qqmodels.Add(new QQViewModel
+                {
+                    Question = question,
+                    Quiz = quiz
+                });
+            }
+            return View(qqmodels);
         }
 
         // GET: Questions/Details/5
@@ -37,12 +56,18 @@ namespace Acuedify.Controllers
 
             var question = await _context.Question
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (question == null)
-            {
-                return NotFound();
-            }
+            if (question == null) { return NotFound(); }
 
-            return View(question);
+            var quiz = await _context.Quizzes
+                .FirstOrDefaultAsync(q => q.Id == question.QuizId);
+            if (quiz == null) { return NotFound(); }
+
+
+            var qqmodel = new QQViewModel();
+            qqmodel.Question = question;
+            qqmodel.Quiz = quiz;
+
+            return View(qqmodel);
         }
 
         // GET: Questions/Create
@@ -82,9 +107,28 @@ namespace Acuedify.Controllers
                 return NotFound();
             }
 
-            ViewBag.QuizIds = GetQuizIdsAsSelectListItems(question.QuizId);
+            
+            var quiz = await _context.Quizzes
+                .FirstOrDefaultAsync(q => q.Id == question.QuizId);
+            if (quiz == null) { return NotFound(); }
 
-            return View(question);
+
+            var qqmodel = new QQViewModel();
+            qqmodel.Question = question;
+            qqmodel.Quiz = quiz;
+
+            var one = _context.Quizzes
+                .ToList()
+                .Select(quiz => quiz.Title)
+                .ToList();
+            ViewBag.QuizNames = _context.Quizzes
+                .ToList()
+                .Select(quiz => quiz.Title)
+                .Select(title => new SelectListItem(title, title))
+                .ToList();
+            var two = GetQuizIdsAsSelectListItems(id);
+
+            return View(qqmodel);
         }
         
         // POST: Questions/Edit/5
@@ -92,23 +136,29 @@ namespace Acuedify.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Term,Definition,QuizId")] Question question)
+        public async Task<IActionResult> Edit(int id, QQViewModel qqmodel)
         {
-            if (id != question.Id)
-            {
-                return NotFound();
-            }
+            //find the referenced quiz
+            Quiz? newRefQuiz = (Quiz?)_context.Quizzes
+                .Where(quiz => quiz.Title.Equals(qqmodel.Quiz.Title))
+                .ToList()
+                .First();
 
+            qqmodel.Quiz = newRefQuiz;
+            qqmodel.Question.QuizId = newRefQuiz.Id;
+
+            if (!ModelState.IsValid) { return View("ErrorView", qqmodel.ToString()); }
             if (ModelState.IsValid)
             {
+
                 try
                 {
-                    _context.Update(question);
+                    _context.Update(qqmodel.Question);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!QuestionExists(question.Id))
+                    if (!QuestionExists(qqmodel.Question.Id))
                     {
                         return NotFound();
                     }
@@ -117,9 +167,11 @@ namespace Acuedify.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Edit", "Quizzes", new { id = question.QuizId });
+
+                if (qqmodel.Quiz == null) { return View("ErrorView", "sumtingwong"); }
+                return RedirectToAction("Edit", "Quizzes", new { id = qqmodel.Question.QuizId });
             }
-            return View(question);
+            return View(qqmodel);
         }
 
         // GET: Questions/Delete/5
@@ -187,7 +239,7 @@ namespace Acuedify.Controllers
           return (_context.Question?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private List<SelectListItem> GetQuizIdsAsSelectListItems(int selectQuizId = -1)
+        private List<SelectListItem> GetQuizIdsAsSelectListItems(int? selectQuizId = -1)
         {
             return ViewBag.QuizIds = _context.Quizzes
                 .Select(q => q.Id)

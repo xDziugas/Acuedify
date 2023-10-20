@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Acuedify.Models.Question>
+﻿@model List<QQViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,33 +13,33 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Term)
+                @Html.DisplayNameFor(model => model.First().Question.Term)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Definition)
+                @Html.DisplayNameFor(model => model.First().Question.Definition)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.QuizId)
+                Quiz Name
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (QQViewModel item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Term)
+                @Html.DisplayFor(modelItem => item.Question.Term)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Definition)
+                @Html.DisplayFor(modelItem => item.Question.Definition)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.QuizId)
+                @Html.DisplayFor(modelItem => item.Quiz.Title)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Question.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Question.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Question.Id">Delete</a>
             </td>
         </tr>
 }

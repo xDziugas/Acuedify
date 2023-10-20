@@ -1,4 +1,4 @@
-﻿@model Acuedify.Models.Question
+﻿@model QQViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,26 +11,26 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Term)
+            @Html.DisplayNameFor(model => model.Question.Term)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Term)
+            @Html.DisplayFor(model => model.Question.Term)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Definition)
+            @Html.DisplayNameFor(model => model.Question.Definition)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Definition)
+            @Html.DisplayFor(model => model.Question.Definition)
         </dd>
          <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.QuizId)
+            @Html.DisplayNameFor(model => model.Quiz.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.QuizId)
+            @Html.DisplayFor(model => model.Quiz.Title)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.Question.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
