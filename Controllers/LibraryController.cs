@@ -90,5 +90,18 @@ namespace Acuedify.Controllers
 
 			return RedirectToAction("Index");
 		}
+
+		[HttpGet("/fav")]
+		public IActionResult ToggleFavorite(int id)
+		{
+			var quiz = _libraryService.GetUserQuiz(id);
+			if (quiz != null)
+			{
+				quiz.isFavorite = !quiz.isFavorite;
+				_libraryService.UpdateUserQuiz(quiz);
+			}
+
+			return RedirectToAction("Index");
+		}
 	}
 }

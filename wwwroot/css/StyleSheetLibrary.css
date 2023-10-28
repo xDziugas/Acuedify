@@ -1,0 +1,55 @@
+﻿body {
+}
+
+.text {
+    flex: 1;
+}
+
+.custom-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    max-width: 100%; 
+}
+
+.custom-link {
+
+}
+
+.custom-icon {
+    transition: fill 0.2s;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.not-favorite-star {
+    fill: white;
+    transition: fill 0.3s ease-in-out; 
+}
+
+.favorite-star {
+    fill: yellow;
+    transition: fill 0.5s ease-in-out; 
+    animation: starAnimation 1.3s infinite; 
+}
+
+.not-favorite-star .favorite-star {
+    flex: 1;
+}
+
+@keyframes starAnimation {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1); 
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+
