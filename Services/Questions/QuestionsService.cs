@@ -13,7 +13,7 @@ namespace Acuedify.Services.Questions
         {
             _dbContext = dbContext;
         }
-        List<SelectListItem> IQuestionsService.GetQuizIdsAsSelectListItems(int selectQuizId)
+        List<SelectListItem> IQuestionsService.GetQuizIdsAsSelectListItems(int selectQuizId = -1)
         {
             return _dbContext.Quizzes
                 .Select(q => q.Id)

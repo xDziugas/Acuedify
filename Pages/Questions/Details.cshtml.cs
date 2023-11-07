@@ -18,6 +18,7 @@ namespace Acuedify.Pages.Questions
         public Question? question { get; set; }
         public async Task<IActionResult> OnGet(int? id)
         {
+            System.Diagnostics.Debug.WriteLine("1");
             if (id == null || _context.Question == null)
             {
                 return RedirectToPage("../Error", "No questions found");
