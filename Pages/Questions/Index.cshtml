@@ -13,19 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Term)
+                Term
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Definition)
+                Definition
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.QuizId)
+                Quiz Name
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Questions)
         {
             <tr>
                 <td>
@@ -35,12 +35,12 @@
                     @Html.DisplayFor(modelItem => item.Definition)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.QuizId)
+                    @Html.DisplayFor(modelItem => item.QuizId) @* fix for name *@
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="Details" asp-route-id="@item.Id">Details</a>|
+                    <a asp-page="Delete" asp-route-id="@item.Id">Delete</a> @* Get icons *@
                 </td>
             </tr>
         }

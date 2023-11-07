@@ -1,11 +1,12 @@
 using Acuedify.Data;
 using Acuedify.Services.Library;
 using Acuedify.Services.Playing;
+using Acuedify.Services.Questions;
 using Acuedify.Services.Library.Interfaces;
 using Acuedify.Services.Playing.Interfaces;
+using Acuedify.Services.Questions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IPlayingService, PlayingService>();
+builder.Services.AddScoped<IQuestionsService, QuestionsService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

@@ -1,6 +1,8 @@
 using Acuedify.Data;
+using Acuedify.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace Acuedify.Pages.Questions
 {
@@ -12,8 +14,19 @@ namespace Acuedify.Pages.Questions
 		{
 			_context = context;
 		}
-		public void OnGet()
+
+        public IEnumerable<Question> Questions { get; set; }
+		public async Task<IActionResult> OnGetAsync()
         {
+            if (_context.Question != null)
+            {
+                Questions = await _context.Question.ToListAsync();
+                return Page();
+            }
+            else
+            {
+                return RedirectToPage("../Error", "Entity set 'AppDBContext.Question'  is null.");
+            }
 
         }
     }

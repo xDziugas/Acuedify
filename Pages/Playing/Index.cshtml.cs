@@ -14,8 +14,8 @@ namespace Acuedify.Pages.Playing
 
 		public IndexModel(ILibraryService libraryService, IPlayingService playingService)
 		{
-			this._libraryService = libraryService;
-			this._playingService = playingService;
+			_libraryService = libraryService;
+			_playingService = playingService;
 		}
 
 		public PlayDetails? Details { get; set; }
