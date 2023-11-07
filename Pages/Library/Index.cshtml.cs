@@ -13,9 +13,9 @@ namespace Acuedify.Pages.Library
             this._libraryService = libraryService;
         }
                         
-        public IEnumerable<Folder> Folders { get; set; } 
-        public IEnumerable<Quiz> Quizzes { get; set; }
-		public IEnumerable<Quiz> Favourites { get; set; }
+        public IEnumerable<Folder>? Folders { get; set; } 
+        public IEnumerable<Quiz>? Quizzes { get; set; }
+		public IEnumerable<Quiz>? Favourites { get; set; }
 
         public void OnGet()
         {
