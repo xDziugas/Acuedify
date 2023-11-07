@@ -12,26 +12,20 @@ namespace Acuedify.Pages.Library
         {
             this._libraryService = libraryService;
         }
-
-
-        
-        public IEnumerable<Folder> Folders { get; set; }
-        
+                        
+        public IEnumerable<Folder> Folders { get; set; } 
         public IEnumerable<Quiz> Quizzes { get; set; }
-        
 		public IEnumerable<Quiz> Favourites { get; set; }
 
-
-        public ActionResult OnGet()
+        public void OnGet()
         {
 
-            this.Folders = _libraryService.GetUserFolders();
-            this.Quizzes = _libraryService.GetUserQuizzes();
+            Folders = _libraryService.GetUserFolders();
+            Quizzes = _libraryService.GetUserQuizzes();
             var favourites = new List<Quiz>();
             if (Quizzes == null)
             {
                 ModelState.AddModelError(string.Empty, "Could not retrieve quizzes from database!");
-                return Page();
             }
 
 
@@ -42,11 +36,10 @@ namespace Acuedify.Pages.Library
                     favourites.Add(quiz);
                 }
             }
-            this.Favourites = favourites;
+            Favourites = favourites;
 
-            return Page();
         }
-        public ActionResult OnGetToggleFavorite(int id)
+        public IActionResult OnGetToggleFavorite(int id)
 		{
 			var quiz = _libraryService.GetUserQuiz(id);
 			if (quiz != null)
@@ -55,7 +48,11 @@ namespace Acuedify.Pages.Library
 				_libraryService.UpdateUserQuiz(quiz);
 			}
 
-            return Page();
+            return RedirectToPage("Index");
 		}
+
+        //WHERE IS CREATE FOLDER???
+
+
 	}
 }
