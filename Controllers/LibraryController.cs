@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Acuedify.Controllers
 {
 	[Route("Library")]
+
 	public class LibraryController : Controller
 	{
 		private readonly ILibraryService _libraryService;

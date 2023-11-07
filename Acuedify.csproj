@@ -8,11 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\Questions\Remove.cshtml.cs" />
+    <Compile Remove="Controllers\LibraryController.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Pages\Questions\Remove.cshtml" />
     <Content Remove="wwwroot\css\StyleSheet.css" />
     <Content Remove="wwwroot\js\quiz.js" />
   </ItemGroup>
