@@ -48,7 +48,6 @@ namespace Acuedify.Controllers
 					SessionKey: Constants.PlayingSessionKey,
 					session: HttpContext.Session,
 					details: details
-
 					);
 			}
 			else // Loading of any other flashcard
@@ -74,5 +73,39 @@ namespace Acuedify.Controllers
 
 			return View(details);
 		}
-	}
+
+		[HttpGet]
+		[Route("GetNextFlashCardPartial")]
+		public IActionResult GetNextFlashCardPartial(int quizId, int questionId)
+		{
+			var details = _playingService.GetFromSession(
+				SessionKey: Constants.PlayingSessionKey,
+				session: HttpContext.Session
+			);
+
+			details.CurrentIndex = questionId;
+
+			_playingService.SetToSession(
+				SessionKey: Constants.PlayingSessionKey,
+				session: HttpContext.Session,
+				details: details
+			);
+
+			if (!_playingService.isValid(details))
+			{
+				return PartialView("ErrorView", "quiz is null");
+			}
+
+            return PartialView("_FlashcardContent", details?.Quiz?.Questions[details.CurrentIndex]);
+		}
+
+        [HttpPost]
+        [Route("SubmitQuizResults")]
+        public IActionResult SubmitQuizResults([FromBody] QuizResultsModel results)
+        {
+            _libraryService.UpdateQuizResult(results);
+            return Json(new { success = true });
+        }
+
+    }
 }

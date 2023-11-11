@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Acuedify.Models
@@ -19,6 +21,29 @@ namespace Acuedify.Models
         public int? FolderId { get; set; } = null;
 
         public Folder? Folder { get; set; } = null;
+
+        public int TimesSolved { get; set; } = 0;
+
+        public int? Ao3Score { get; set; } = null;
+
+        //serialized list, so no new tables are created
+        public string? PastScoresSerialized { get; set; }
+
+        [NotMapped]
+        public List<int> PastScores
+        {
+            get
+            {
+                return string.IsNullOrEmpty(PastScoresSerialized)
+                    ? new List<int>()
+                    : JsonConvert.DeserializeObject<List<int>>(PastScoresSerialized);
+            }
+            set
+            {
+                PastScoresSerialized = JsonConvert.SerializeObject(value);
+            }
+        }
+
 
     }
 }
