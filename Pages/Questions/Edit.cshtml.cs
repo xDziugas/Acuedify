@@ -24,16 +24,20 @@ namespace Acuedify.Pages.Questions
 
         public async Task<IActionResult> OnGet(int? id)
         {
-            if (id == null || _context.Question == null)
+            if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("../Error", new { errormessage = "Id is null" });
+            }
+            if (_context.Question == null)
+            {
+                return RedirectToPage("../Error", new { errormessage = "Question db context is empty" });
             }
 
             question = await _context.Question.FindAsync(id);
             
             if (question == null)
             {
-                return NotFound();
+                return RedirectToPage("../Error", new { errormessage = "Question is null" });
             }
 
             QuizIds = _questionsService.GetQuizIdsAsSelectListItems(question.QuizId);
@@ -55,7 +59,7 @@ namespace Acuedify.Pages.Questions
                 {
                     if (!_questionsService.QuestionExists(question.Id))
                     {
-                        return NotFound();
+                        return RedirectToPage("../Error", new { errormessage = "Question Id: " + question.Id + " doesnt exist."});
                     }
                     else
                     {

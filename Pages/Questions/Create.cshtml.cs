@@ -23,8 +23,19 @@ namespace Acuedify.Pages.Questions
 
         public void OnGet()
         {
-           /* QuizIds = _questionsService.GetQuizIdsAsSelectListItems();
-            return View();*/
+            QuizIds = _questionsService.GetQuizIdsAsSelectListItems(-1);
+            Page();
+        }
+
+        public async Task<IActionResult> OnPost(Question question)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(question);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("Index");
+            }
+            return Page();
         }
     }
 }

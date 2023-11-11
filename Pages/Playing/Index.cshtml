@@ -60,7 +60,7 @@
 			@if (Model.Details.CurrentIndex < Model.Details.Quiz.Questions.Count - 1)
 			{
 				<div class="btn-next">
-					<a class="btn btn-outline-primary btn-sm" id="next-button" asp-controller="Playing" asp-action="Index" asp-route-quizId="@Model.Details.Quiz.Id" asp-route-questionId="@(Model.Details.CurrentIndex + 1)">
+					<a class="btn btn-outline-primary btn-sm" id="next-button" asp-page="Index" asp-route-quizId="@Model.Details.Quiz.Id" asp-route-questionId="@(Model.Details.CurrentIndex + 1)">
 						<svg width="16" height="16" viewBox="0 0 16 16">
 							<use xlink:href="Icons/Icons.svg#icon-next"></use>
 						</svg>
@@ -71,7 +71,7 @@
 			else
 			{
 				<div class="btn-back-to-library">
-					<a class="btn btn-outline-primary btn-sm" id="back-to-library-button" asp-controller="Library" asp-action="Index">
+					<a class="btn btn-outline-primary btn-sm" id="back-to-library-button" asp-page="Library">
 						<svg width="16" height="16" viewBox="0 0 16 16">
 							<use xlink:href="Icons/Icons.svg#icon-back"></use>
 						</svg>
