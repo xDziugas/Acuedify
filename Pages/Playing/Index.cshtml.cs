@@ -2,11 +2,13 @@ using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
 using Acuedify.Services.Playing;
 using Acuedify.Services.Playing.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Acuedify.Pages.Playing
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
 		private readonly ILibraryService _libraryService;

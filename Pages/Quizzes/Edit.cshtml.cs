@@ -1,12 +1,14 @@
 using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Questions.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace Acuedify.Pages.Quizzes
 {
+    [Authorize]
     public class EditModel : PageModel
     {
         private readonly AppDBContext _context;

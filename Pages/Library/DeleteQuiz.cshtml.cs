@@ -1,11 +1,13 @@
 using Acuedify.Models;
 using Acuedify.Services.Library;
 using Acuedify.Services.Library.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Acuedify.Pages.Library
 {
+    [Authorize]
     public class DeleteQuizModel : PageModel
     {
 		private readonly ILibraryService _libraryService;
@@ -14,6 +16,7 @@ namespace Acuedify.Pages.Library
 			this._libraryService = libraryService;
 		}
 		public Quiz Quiz { get; set; }
+
 		public IActionResult OnGet(int id)
 		{
 			Quiz = _libraryService.GetUserQuiz(id);

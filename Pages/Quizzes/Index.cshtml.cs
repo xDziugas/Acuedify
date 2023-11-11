@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -5,8 +6,10 @@ namespace Acuedify.Pages.Quizzes
 {
     public class IndexModel : PageModel
     {
-        public void OnGet()
+        [Authorize]
+        public IActionResult OnGet()
         {
+            return RedirectToPage("../Library/Index");
         }
     }
 }

@@ -1,11 +1,13 @@
 using Acuedify.Data;
 using Acuedify.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace Acuedify.Pages.Questions
 {
+    [Authorize]
     public class DetailsModel : PageModel
     {
         private readonly AppDBContext _context;

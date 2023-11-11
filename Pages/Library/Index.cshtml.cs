@@ -1,10 +1,12 @@
 using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Acuedify.Pages.Library
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly ILibraryService _libraryService;
