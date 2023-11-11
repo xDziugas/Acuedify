@@ -48,12 +48,12 @@
 										</td>
 										<td>@quiz.Description</td>
 										<td>
-											<a asp-controller="Playing" asp-action="Index" asp-route-quizId="@quiz.Id" class="btn btn-outline-success btn-sm">
+											<a asp-page="Playing/Index" asp-route-quizId="@quiz.Id" class="btn btn-outline-success btn-sm">
 												<svg width="16" height="16" viewBox="0 0 16 16">
 													<use xlink:href="Icons/Icons.svg#icon-play"></use>
 												</svg>
 											</a>
-											<a asp-controller="Library" asp-action="Edit" asp-route-id=@quiz.Id class="btn btn-outline-primary btn-sm">
+											<a asp-page="Quizzes/Edit" asp-route-quizId=@quiz.Id class="btn btn-outline-primary btn-sm">
 												<svg width="16" height="16" viewBox="0 0 16 16">
 													<use xlink:href="Icons/Icons.svg#icon-edit"></use>
 												</svg>
@@ -100,12 +100,12 @@
 						</td>
 						<td>@quiz.Description</td>
 						<td>
-							<a asp-controller="Playing" asp-action="Index" asp-route-quizId=@quiz.Id asp-route-questionId=0 class="btn btn-outline-success btn-sm">
+							<a asp-page="/Playing/Index" asp-route-quizId="@quiz.Id" asp-route-questionId=0 class="btn btn-outline-success btn-sm">
 								<svg width="16" height="16" viewBox="0 0 16 16">
 									<use xlink:href="Icons/Icons.svg#icon-play"></use>
 								</svg>
 							</a>
-							<a asp-controller="Quizzes" asp-action="Edit" asp-route-id=@quiz.Id class="btn btn-outline-primary btn-sm">
+							<a asp-page="/Quizzes/Edit" asp-route-quizId=@quiz.Id class="btn btn-outline-primary btn-sm">
 								<svg width="16" height="16" viewBox="0 0 16 16">
 									<use xlink:href="Icons/Icons.svg#icon-edit"></use>
 								</svg>

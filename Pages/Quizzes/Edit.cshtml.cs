@@ -20,15 +20,15 @@ namespace Acuedify.Pages.Quizzes
 
         public Quiz? quiz { get; set; }
 
-        public async Task<IActionResult> OnGet(int? id)
+        public async Task<IActionResult> OnGet(int? quizId)
         {
-            if (id == null || _context.Quizzes == null)
+            if (quizId == null || _context.Quizzes == null)
             {
-                return RedirectToPage("../Error", "Database is empty.");
+                return RedirectToPage("../Error", "Database is empty or didnt provide quizid");
             }
 
             quiz = await _context.Quizzes
-                .Where(q => q.Id == id)
+                .Where(q => q.Id == quizId)
                 .Include(q => q.Questions)
                 .FirstOrDefaultAsync();
 
