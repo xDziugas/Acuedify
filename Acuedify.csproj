@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\LibraryController.cs" />
+    <Compile Remove="Controllers\PlayingController.cs" />
+    <Compile Remove="Controllers\QuizzesController.cs" />
   </ItemGroup>
 
   <ItemGroup>
