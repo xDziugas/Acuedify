@@ -14,21 +14,21 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.question.Term)
+            @Html.DisplayNameFor(model => model.Question.Term)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.question.Term)
+            @Html.DisplayFor(model => model.Question.Term)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.question.Definition)
+            @Html.DisplayNameFor(model => model.Question.Definition)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.question.Definition)
+            @Html.DisplayFor(model => model.Question.Definition)
         </dd>
     </dl>
 
     <form method="post">
-        <input type="hidden" asp-for="question.Id" />
+        <input type="hidden" asp-for="Question.Id" />
         <input asp-page="Delete" type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

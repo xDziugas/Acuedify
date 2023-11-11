@@ -7,6 +7,7 @@ using Acuedify.Services.Playing.Interfaces;
 using Acuedify.Services.Questions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Acuedify.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,7 @@ builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
 ));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDBContext>();
+builder.Services.AddDefaultIdentity<AcuedifyUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDBContext>();
 
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IPlayingService, PlayingService>();
@@ -37,6 +38,16 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 builder.Services.AddRazorPages();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.SignIn.RequireConfirmedEmail = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 4;
+    options.Password.RequiredUniqueChars = 1;
+});
 
 var app = builder.Build();
 
@@ -71,9 +82,9 @@ app.UseEndpoints(endpoints =>
 using (var scope = app.Services.CreateScope())
 {
     var appDBContext = scope.ServiceProvider.GetRequiredService<AppDBContext>();
-    if (!appDBContext.Quizzes.Any())
+    if (!appDBContext.Users.Any())
     {
-        MockDataInitializer.SeedQuizzes(appDBContext, "MockData/quizzes.json");
+        MockDataInitializer.SeedUsers(appDBContext, "MockData/users.json");
     }
 }
 

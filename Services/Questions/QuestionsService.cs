@@ -13,9 +13,10 @@ namespace Acuedify.Services.Questions
         {
             _dbContext = dbContext;
         }
-        List<SelectListItem> IQuestionsService.GetQuizIdsAsSelectListItems(int selectQuizId)
+        List<SelectListItem> IQuestionsService.GetQuizIdsAsSelectListItems(int selectQuizId, string userID)
         {
             return _dbContext.Quizzes
+                .Where(quiz => quiz.UserId == userID)
                 .Select(q => q.Id)
                 .Select(id => new SelectListItem(id.ToString(), id.ToString(), id == selectQuizId))
                 .ToList();

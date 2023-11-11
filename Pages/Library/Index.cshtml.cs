@@ -1,8 +1,10 @@
 using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace Acuedify.Pages.Library
 {
@@ -10,9 +12,13 @@ namespace Acuedify.Pages.Library
     public class IndexModel : PageModel
     {
         private readonly ILibraryService _libraryService;
-        public IndexModel(ILibraryService libraryService)
+        private readonly UserManager<AcuedifyUser> _userManager;
+        private string? userID;
+
+        public IndexModel(ILibraryService libraryService, UserManager<AcuedifyUser> userManager)
         {
             this._libraryService = libraryService;
+            this._userManager = userManager;
         }
                         
         public IEnumerable<Folder>? Folders { get; set; } 
@@ -21,40 +27,66 @@ namespace Acuedify.Pages.Library
 
         public void OnGet()
         {
-
-            Folders = _libraryService.GetUserFolders();
-            Quizzes = _libraryService.GetUserQuizzes();
-            var favourites = new List<Quiz>();
-            if (Quizzes == null)
+            if ((userID = getUserId()) == null) { authErrorPage(); }
+            else
             {
-                ModelState.AddModelError(string.Empty, "Could not retrieve quizzes from database!");
-            }
+                Folders = _libraryService.GetUserFolders(userID);
+                Quizzes = _libraryService.GetUserQuizzes(userID);
+                var favourites = new List<Quiz>();
 
 
-            foreach (Quiz quiz in Quizzes)
-            {
-                if (quiz.isFavorite)
+                if (Quizzes == null)
                 {
-                    favourites.Add(quiz);
+                    RedirectToPage("../Error", new { errormessage = "@Library/Index - Could not retrieve quizzes from the db." });
+                }
+                else
+                {
+                    foreach (Quiz quiz in Quizzes)
+                    {
+                        if (quiz.isFavorite)
+                        {
+                            favourites.Add(quiz);
+                        }
+                    }
+                    Favourites = favourites;
                 }
             }
-            Favourites = favourites;
-
+            
         }
+
+
         public IActionResult OnGetToggleFavorite(int id)
 		{
-			var quiz = _libraryService.GetUserQuiz(id);
-			if (quiz != null)
-			{
-				quiz.isFavorite = !quiz.isFavorite;
-				_libraryService.UpdateUserQuiz(quiz);
-			}
+            if ((userID = getUserId()) == null) { authErrorPage(); }
+
+            var quiz = _libraryService.GetUserQuiz(id);
+            if (quiz.UserId != userID)
+            {
+                RedirectToPage("../Error", new { errormessage = "@Library/Index(ToggleFavorite) - You do not have access to this quiz." });
+            }
+            if (quiz != null)
+            {
+                quiz.isFavorite = !quiz.isFavorite;
+                _libraryService.UpdateUserQuiz(quiz);
+            }
+            else
+            {
+                RedirectToPage("../Error", new { errormessage = "@Library/Index(ToggleFavorite) - Couldn't fetch quiz." });
+            }
+
 
             return RedirectToPage("Index");
 		}
 
         //WHERE IS CREATE FOLDER???
+        private String? getUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+        private RedirectToPageResult authErrorPage()
+        {
+            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
+        }
 
-
-	}
+    }
 }

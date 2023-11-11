@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Acuedify.Pages.Quizzes
 {
@@ -12,41 +13,57 @@ namespace Acuedify.Pages.Quizzes
     public class EditModel : PageModel
     {
         private readonly AppDBContext _context;
-        private readonly IQuestionsService _questionsService;
+        private string? userID;
 
         public EditModel(AppDBContext context, IQuestionsService questionsService)
         {
             _context = context;
-            _questionsService = questionsService;
         }
 
         public Quiz? quiz { get; set; }
 
         public async Task<IActionResult> OnGet(int? quizId)
         {
-            if (quizId == null || _context.Quizzes == null)
+            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
+
+            if (quizId == null)
             {
-                return RedirectToPage("../Error", new { errormessage = "@Pages/Edit - Database is empty or didnt provide quizid" });
+                return errorPage("@Quizzes/Edit - not provided with Id.");
+            }
+
+            if (_context.Quizzes == null)
+            {
+                return errorPage("@Quizzes/Edit - Something went wrong with Quizzes database." );
             }
 
             quiz = await _context.Quizzes
+                .Where(quiz => quiz.UserId == userID) // quiz access check
                 .Where(q => q.Id == quizId)
                 .Include(q => q.Questions)
                 .FirstOrDefaultAsync();
 
             if (quiz == null)
             {
-                return RedirectToPage("../Error", "Quiz not found."); ;
+                return errorPage("@Quizzes/Edit - Quiz not found or you do not have access");
             }
+
             return Page();
         }
 
         public async Task<IActionResult> OnPost(int id, Quiz quiz)
         {
+            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
+
             this.quiz = quiz;
             if (id != quiz.Id)
             {
-                return RedirectToPage("../Error", "Editted quiz not found.");
+                return errorPage("@Quizzes/Edit - Editted quiz not found."); // when does that happen? (for vlad by vlad)
+            }
+
+            if(quiz.UserId != userID) 
+            {
+                return errorPage("@Quizzes/Edit - You do not have access to this quiz");
+                //belenkai gera daina per spotifaju pasileidau katik
             }
 
             if (ModelState.IsValid)
@@ -60,11 +77,11 @@ namespace Acuedify.Pages.Quizzes
                 {
                     if (!QuizExists(quiz.Id))
                     {
-                        return RedirectToPage("../Error", "Quiz doesn't exist.");
+                        return errorPage("@Quizzes/Edit - Quiz doesnt exist");
                     }
                     else
                     {
-                        return RedirectToPage("../Error", "Unknown error");
+                        return errorPage("@Quizzes/Edit - Failed to update database");
                     }
                 } 
                 return RedirectToPage("Edit", new { id = quiz.Id });
@@ -75,6 +92,25 @@ namespace Acuedify.Pages.Quizzes
         private bool QuizExists(int id)
         {
             return (_context.Quizzes?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+
+
+
+
+
+        //auth helper functions
+        private String? getUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+        private RedirectToPageResult authErrorPage()
+        {
+            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
+        }
+        private RedirectToPageResult errorPage(String errorMessage)
+        {
+            return RedirectToPage("../Error", new { errormessage = errorMessage });
         }
     }
 }

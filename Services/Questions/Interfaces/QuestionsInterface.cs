@@ -6,7 +6,7 @@ namespace Acuedify.Services.Questions.Interfaces
 {
     public interface IQuestionsService
     {
-        List<SelectListItem> GetQuizIdsAsSelectListItems(int selectQuizId);
+        List<SelectListItem> GetQuizIdsAsSelectListItems(int selectQuizId, string userID);
         bool QuestionExists(int id);
     }
 }

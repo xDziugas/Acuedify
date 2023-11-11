@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Acuedify.Models
 {
-    public class AcudefyUser : IdentityUser
+    public class AcuedifyUser : IdentityUser
     {
-        [ForeignKey("UserID")]
+        //[ForeignKey("UserId")]
         public List<Quiz> Quizzes { get; set; } = new List<Quiz>();
 
         [ForeignKey("UserId")]

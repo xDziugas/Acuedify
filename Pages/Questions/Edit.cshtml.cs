@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Acuedify.Pages.Questions
 {
@@ -14,6 +15,7 @@ namespace Acuedify.Pages.Questions
     {
         private readonly AppDBContext _context;
         private readonly IQuestionsService _questionsService;
+        private string? userID;
 
         public EditModel(AppDBContext context, IQuestionsService questionsService)
         {
@@ -26,30 +28,47 @@ namespace Acuedify.Pages.Questions
 
         public async Task<IActionResult> OnGet(int? id)
         {
-            if (id == null)
+            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
+            if (id == null) 
             {
-                return RedirectToPage("../Error", new { errormessage = "Id is null" });
-            }
-            if (_context.Question == null)
-            {
-                return RedirectToPage("../Error", new { errormessage = "Question db context is empty" });
+                return errorPage("@Questions/Edit - not provided with Id");
             }
 
+            if (_context.Question == null) 
+            {
+                return errorPage("@Questions/Index - Something wrong with the database of Questions.");
+            }
+        
             question = await _context.Question.FindAsync(id);
-            
+
             if (question == null)
             {
-                return RedirectToPage("../Error", new { errormessage = "Question is null" });
+                return errorPage("@Questions/Index - Question not found.");
             }
 
-            QuizIds = _questionsService.GetQuizIdsAsSelectListItems(question.QuizId);
+            if (question.UserId != userID) // Question access check
+            {
+                return errorPage("@Questions/Index - You do not have access to this question.");
+            }
+
+
+            // fix with quiz name 
+            QuizIds = _questionsService.GetQuizIdsAsSelectListItems(question.QuizId, userID);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost(Question question) {
+        public async Task<IActionResult> OnPost(Question question)
+        {
+            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
 
             this.question = question;
+
+            if (question.UserId != userID) // Question access check
+            {
+                return errorPage("@Questions/Index - You do not have access to this question.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -61,16 +80,34 @@ namespace Acuedify.Pages.Questions
                 {
                     if (!_questionsService.QuestionExists(question.Id))
                     {
-                        return RedirectToPage("../Error", new { errormessage = "Question Id: " + question.Id + " doesnt exist."});
+                        return errorPage("@Questions / Index - Question " + question.Id + " doesnt exist.");
                     }
                     else
                     {
-                        throw;
+                        return errorPage("@Questions / Index - Failed to update the question database.");
                     }
                 }
                 return RedirectToPage("Edit", new { id = question.Id });
             }
             return Page();
+        }
+
+
+
+
+
+        //auth helper functions
+        private String? getUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+        private RedirectToPageResult authErrorPage()
+        {
+            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
+        }
+        private RedirectToPageResult errorPage(String errorMessage)
+        {
+            return RedirectToPage("../Error", new { errormessage = errorMessage });
         }
     }
 }
