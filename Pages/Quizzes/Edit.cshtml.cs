@@ -24,7 +24,7 @@ namespace Acuedify.Pages.Quizzes
         {
             if (quizId == null || _context.Quizzes == null)
             {
-                return RedirectToPage("../Error", "Database is empty or didnt provide quizid");
+                return RedirectToPage("../Error", new { errormessage = "@Pages/Edit - Database is empty or didnt provide quizid" });
             }
 
             quiz = await _context.Quizzes

@@ -1,12 +1,12 @@
 ﻿@page
-@model Acuedify.Pages.Questions.EditModel
+@model Acuedify.Pages.Questions.CreateForQuizModel
 @* @model Acuedify.Models.Question *@
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
 <h4>Question</h4>
 <hr />
@@ -14,7 +14,6 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="question.Id" />
             <div class="form-group">
                 <label asp-for="question.Term" class="control-label"></label>
                 <input asp-for="question.Term" class="form-control" />
@@ -28,17 +27,16 @@
             <div class="form-group">
                 <label asp-for="question.QuizId" class="control-label"></label>
                 <select asp-for="question.QuizId" class="form-control" asp-items="Model.QuizIds"></select>
-                <span asp-validation-for="question.QuizId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input asp-page="Edit" type="submit" value="Save" class="btn btn-primary" />
+                <input asp-page="CreateForQuiz" type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-page="/Quizzes/Edit" asp-route-quizId="@Model.question.QuizId">Back to Quiz</a>
+    <a asp-page="Library/Index">Back to Quizzes</a>
 </div>
 
 @section Scripts {
