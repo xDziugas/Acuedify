@@ -17,8 +17,8 @@ namespace Acuedify.Services.Questions
         {
             return _dbContext.Quizzes
                 .Where(quiz => quiz.UserId == userID)
-                .Select(q => q.Id)
-                .Select(id => new SelectListItem(id.ToString(), id.ToString(), id == selectQuizId))
+                //.Select(q => q.Id)
+                .Select(quiz => new SelectListItem(quiz.Title.ToString(), quiz.Id.ToString(), quiz.Id == selectQuizId))
                 .ToList();
         }
         bool IQuestionsService.QuestionExists(int id)

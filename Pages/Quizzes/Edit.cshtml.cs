@@ -49,11 +49,14 @@ namespace Acuedify.Pages.Quizzes
 
             return Page();
         }
-
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //FIXXXXX
         public async Task<IActionResult> OnPost(int id, Quiz quiz)
-        {
+        {   
             if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
-
+            System.Diagnostics.Debug.WriteLine(quiz.Id);
+            System.Diagnostics.Debug.WriteLine(id);
+            //fix this
             this.quiz = quiz;
             if (id != quiz.Id)
             {

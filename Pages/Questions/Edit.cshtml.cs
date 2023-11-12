@@ -36,19 +36,19 @@ namespace Acuedify.Pages.Questions
 
             if (_context.Question == null) 
             {
-                return errorPage("@Questions/Index - Something wrong with the database of Questions.");
+                return errorPage("@Questions/Edit - Something wrong with the database of Questions.");
             }
         
             question = await _context.Question.FindAsync(id);
 
             if (question == null)
             {
-                return errorPage("@Questions/Index - Question not found.");
+                return errorPage("@Questions/Edit - Question not found.");
             }
 
             if (question.UserId != userID) // Question access check
             {
-                return errorPage("@Questions/Index - You do not have access to this question.");
+                return errorPage("@Questions/Edit - You do not have access to this question.");
             }
 
 
@@ -66,7 +66,7 @@ namespace Acuedify.Pages.Questions
 
             if (question.UserId != userID) // Question access check
             {
-                return errorPage("@Questions/Index - You do not have access to this question.");
+                return errorPage("@Questions/Edit - You do not have access to this question.");
             }
 
             if (ModelState.IsValid)
@@ -80,11 +80,11 @@ namespace Acuedify.Pages.Questions
                 {
                     if (!_questionsService.QuestionExists(question.Id))
                     {
-                        return errorPage("@Questions / Index - Question " + question.Id + " doesnt exist.");
+                        return errorPage("@Questions / Edit - Question " + question.Id + " doesnt exist.");
                     }
                     else
                     {
-                        return errorPage("@Questions / Index - Failed to update the question database.");
+                        return errorPage("@Questions / Edit - Failed to update the question database.");
                     }
                 }
                 return RedirectToPage("Edit", new { id = question.Id });
