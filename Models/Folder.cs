@@ -10,6 +10,7 @@ namespace Acuedify.Models
         [Required]
         public string? Name { get; set; }
         public List<Quiz>? Quizzes { get; set; }
-        
-	}
+        public string? UserId { get; set; } = null;
+
+    }
 }

@@ -1,0 +1,60 @@
+﻿@page
+@model Acuedify.Pages.Questions.IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Questions</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Term
+            </th>
+            <th>
+                Definition
+            </th>
+            <th>
+                Quiz Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Questions)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Term)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Definition)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuizId) @* fix for name *@
+                </td>
+                <td>
+                    <a asp-page="Details" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <use xlink:href="Icons/Icons.svg#question-mark"></use>
+                        </svg>
+                    </a>
+                    <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <use xlink:href="Icons/Icons.svg#icon-edit"></use>
+                        </svg>
+                    </a>
+                    <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <use xlink:href="Icons/Icons.svg#icon-delete"></use>
+                        </svg>
+                    </a> @* Get icons *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
