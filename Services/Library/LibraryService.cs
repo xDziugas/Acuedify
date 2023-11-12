@@ -1,8 +1,6 @@
 ﻿using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Windows;
 
 namespace Acuedify.Services.Library
 {
@@ -62,10 +60,12 @@ namespace Acuedify.Services.Library
 			return currentQuiz;
 		}
 
-		List<Quiz> ILibraryService.GetUserQuizzes()
+		List<Quiz> ILibraryService.GetUserQuizzes(String id)
 		{
-			return _dbContext.Quizzes?.ToList() ?? new List<Quiz>();
-		}
+            return _dbContext.Quizzes?
+				.Where(s => s.UserId == id)
+				.ToList() ?? new List<Quiz>();
+        }
 
 		bool ILibraryService.UpdateUserQuiz(Quiz updatedQuiz)
 		{
@@ -91,9 +91,11 @@ namespace Acuedify.Services.Library
 			}
 		}
 
-		List<Folder> ILibraryService.GetUserFolders()
+		List<Folder> ILibraryService.GetUserFolders(string userId)
 		{
-			return _dbContext.Folders?.ToList() ?? new List<Folder>();
+			return _dbContext.Folders?
+				.Where(folder => folder.UserId == userId)
+				.ToList() ?? new List<Folder>();
 		}
 
 		List<Question> ILibraryService.GetQuizQuestions(int quizId)

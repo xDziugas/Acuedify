@@ -1,5 +1,4 @@
-﻿@model Question
-
+﻿@model Acuedify.Pages.Playing.IndexModel
 <head>
 	<link rel="stylesheet" href="~/css/StyleSheet.css" />
 </head>
@@ -8,10 +7,10 @@
 		<div class="flashcard" onclick="rotateCard(this)">
 			<div class="card">
 				<div class="term" id="term">
-					@Model.Term
+					@Model.Details.Quiz.Questions[Model.Details.CurrentIndex].Term
 				</div>
 				<div class="definition" id="definition">
-					@Model.Definition
+					@Model.Details.Quiz.Questions[Model.Details.CurrentIndex].Definition
 				</div>
 			</div>
 		</div>
