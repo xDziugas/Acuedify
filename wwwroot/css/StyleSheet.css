@@ -187,4 +187,9 @@
 
 .progress-bar-animated {
     animation: 1s linear infinite progress-bar-stripes;
+    transition: width 0.5s ease;
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
 }

@@ -133,7 +133,7 @@ namespace Acuedify.Services.Library
                 pastScores.Add(result.correct);
 
                 // percentage of correct answers
-                if (pastScores.IsNullOrEmpty()) //? shouldnt ever happen
+                if (pastScores.IsNullOrEmpty())
                 {
                     quiz.Ao3Score = 0;
                 }

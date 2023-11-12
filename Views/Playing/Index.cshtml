@@ -7,13 +7,12 @@
 <head>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="~/css/StyleSheet.css">
-    @Html.AntiForgeryToken()
 </head>
 <body>
     <div class="quiz-container">
 
         <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 10%;"></div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@(Model.CurrentIndex + 1)" aria-valuemin="0" aria-valuemax="@(Model.Quiz.Questions.Count)" style="width: @(((double)(Model.CurrentIndex + 1) / Model.Quiz.Questions.Count) * 100)%;"></div>
         </div>
 
         <div class="header-container">
@@ -65,18 +64,12 @@
         }
     </script>
     <script>
-        function updateProgressBar(currentQuestionIndex) {
-            var totalQuestions = @Model.Quiz.Questions.Count;
-
+        function updateProgressBar(currentQuestionIndex, totalQuestions) {
             var progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
-
             var progressBar = document.querySelector('.progress-bar');
             progressBar.style.width = progress + '%';
         }
     </script>
-
-
-
     <script>
         let correctCount = 0;
         let incorrectCount = 0;
@@ -97,7 +90,7 @@
                 }
             });
 
-            document.addEventListener('click', async function (e) { // Note the async keyword
+            document.addEventListener('click', async function (e) {
                 if (e.target && e.target.id === 'next-button') {
 
                     var quizId = e.target.getAttribute('data-quiz-id');
@@ -108,7 +101,7 @@
                     if (correctCheckbox.checked) correctCount++;
                     if (incorrectCheckbox.checked) incorrectCount++;
 
-                    // Reset checkboxes for the next question
+                    // Reset checkboxes
                     correctCheckbox.checked = false;
                     incorrectCheckbox.checked = false;
 
@@ -117,7 +110,7 @@
                         var nextQuestionIndex = currentQuestionIndex + 1;
                         e.target.setAttribute('data-question-index', nextQuestionIndex);
                         document.querySelector('.card-count').textContent = `${nextQuestionIndex + 1} / ${totalQuestions}`;
-                        updateProgressBar(nextQuestionIndex);
+                        updateProgressBar(nextQuestionIndex, totalQuestions);
 
                         //display the next flashcard
                         fetch(`/Play/GetNextFlashCardPartial?quizId=${quizId}&questionId=${nextQuestionIndex}`)
@@ -129,18 +122,15 @@
                         if (nextQuestionIndex + 1 === totalQuestions) {
 
                             // Change to "Back to Library" button
-
                             e.target.id = 'back-to-library-button';
                             e.target.textContent = 'Return to Library';
                         }
                     }
                 }
-
             });
         });
 
-        document.addEventListener('click', async function (e) { // Note the async keyword
-
+        document.addEventListener('click', async function (e) {
             if (e.target && e.target.id === 'back-to-library-button') {
                 e.preventDefault();
                 const quizId = e.target.getAttribute('data-quiz-id');
@@ -162,16 +152,14 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        // Include anti-forgery token if necessary
                     },
                     body: JSON.stringify({ quizId, correct, incorrect })
                 });
-                return response.json(); // Resolves when fetch is complete
+                return response.json();
             } catch (error) {
                 console.error('Error:', error);
-                throw error; // Rethrow for the caller to handle
+                throw error;
             }
         }
     </script>
-
 </body>
