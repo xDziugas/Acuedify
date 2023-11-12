@@ -1,26 +1,27 @@
 using Acuedify.Data;
 using Acuedify.Services.Library;
 using Acuedify.Services.Playing;
-using Acuedify.Services.Questions;
 using Acuedify.Services.Library.Interfaces;
 using Acuedify.Services.Playing.Interfaces;
-using Acuedify.Services.Questions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Acuedify.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
 ));
 
-builder.Services.AddDefaultIdentity<AcuedifyUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDBContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDBContext>();
 
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IPlayingService, PlayingService>();
-builder.Services.AddScoped<IQuestionsService, QuestionsService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -38,16 +39,6 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 builder.Services.AddRazorPages();
 
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.SignIn.RequireConfirmedEmail = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 4;
-    options.Password.RequiredUniqueChars = 1;
-});
 
 var app = builder.Build();
 
@@ -82,9 +73,9 @@ app.UseEndpoints(endpoints =>
 using (var scope = app.Services.CreateScope())
 {
     var appDBContext = scope.ServiceProvider.GetRequiredService<AppDBContext>();
-    if (!appDBContext.Users.Any())
+    if (!appDBContext.Quizzes.Any())
     {
-        MockDataInitializer.SeedUsers(appDBContext, "MockData/users.json");
+        MockDataInitializer.SeedQuizzes(appDBContext, "MockData/quizzes.json");
     }
 }
 

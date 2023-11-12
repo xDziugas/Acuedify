@@ -13,6 +13,5 @@ namespace Acuedify.Models
         public string? Definition { get; set; }
         [ForeignKey("QuizId")]
         public int QuizId { get; set; }
-        public string? UserId { get; set; } = null;
     }
 }
