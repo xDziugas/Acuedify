@@ -68,6 +68,12 @@ namespace Acuedify.Pages.Playing
 			}
 			else // Loading of any other flashcard
 			{
+
+                Details = _playingService.GetFromSession(
+					SessionKey: Constants.PlayingSessionKey,
+					session: HttpContext.Session
+				);
+
                 // Quiz access check
                 if (Details == null)
                 {
@@ -78,16 +84,8 @@ namespace Acuedify.Pages.Playing
                 {
                     return errorPage("@Playing - You do not have access to this quiz.");
                 }
-                
-                
 
-
-                Details = _playingService.GetFromSession(
-					SessionKey: Constants.PlayingSessionKey,
-					session: HttpContext.Session
-				);
-
-				Details.CurrentIndex = questionId;
+                Details.CurrentIndex = questionId;
 
 				_playingService.SetToSession(
 					SessionKey: Constants.PlayingSessionKey,
@@ -104,9 +102,38 @@ namespace Acuedify.Pages.Playing
 
 		}
 
+        public IActionResult OnGetNextFlashCardPartial(int quizId, int questionId)
+        {
+            var details = _playingService.GetFromSession(
+                SessionKey: Constants.PlayingSessionKey,
+                session: HttpContext.Session
+            );
 
+            details.CurrentIndex = questionId;
 
+            _playingService.SetToSession(
+                SessionKey: Constants.PlayingSessionKey,
+                session: HttpContext.Session,
+                details: details
+            );
 
+            if (!_playingService.isValid(details))
+            {
+                return Partial("ErrorView", "quiz is null");
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = "_FlashcardContent",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<Question>(ViewData, details?.Quiz?.Questions[details.CurrentIndex])
+            };
+        }
+
+        public JsonResult OnPostSubmitQuizResults([FromBody] QuizResultsModel results)
+        {
+            _libraryService.UpdateQuizResult(results);
+            return new JsonResult(new { success = true });
+        }
 
 
         //auth helper functions
