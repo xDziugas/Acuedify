@@ -9,7 +9,7 @@ namespace Acuedify.Models
         public int Id { get; set; }
         [Required]
         public string? Name { get; set; }
-        public List<Quiz>? Quizzes { get; set; }
+        public List<Quiz> Quizzes { get; set; } = new List<Quiz>();
         public string? UserId { get; set; } = null;
 
     }
