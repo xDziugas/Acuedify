@@ -29,10 +29,9 @@ namespace Acuedify.Pages.Folders
         {
             if ((_userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
 
-   		this.folder = folder;
-            this.folder.UserId = _userID;
             if (ModelState.IsValid)
             {
+                folder.UserId = _userID;
                 _context.Add(folder);
                 await _context.SaveChangesAsync();
                 return RedirectToPage("../Library/Index");
