@@ -12,95 +12,64 @@ namespace Acuedify.Pages.Playing
     [Authorize]
     public class IndexModel : PageModel
     {
-		private readonly ILibraryService _libraryService;
-		private readonly IPlayingService _playingService;
+        private readonly ILibraryService _libraryService;
+        private readonly IPlayingService _playingService;
         private string? userID;
 
         public IndexModel(ILibraryService libraryService, IPlayingService playingService)
-		{
-			_libraryService = libraryService;
-			_playingService = playingService;
-		}
-
-		public PlayDetails? Details { get; set; }
-
-
-		public IActionResult OnGet(int quizId, int questionId)
         {
-			// Logged in check
-            if ((userID = getUserId()) == null) { authErrorPage();}
+            _libraryService = libraryService;
+            _playingService = playingService;
+        }
 
-            if (questionId == 0) // Initial loading of the screen with the first flashcard
-			{
-				var flashcardSet = _libraryService.GetUserQuiz(quizId);
+        public PlayDetails? Details { get; set; }
 
-				// Quiz access check
-                if (flashcardSet.UserId != userID) 
-				{ 
-					return errorPage("@Playing - You do not have access to this quiz."); 
-				} 
 
-                var flashcards = _libraryService.GetQuizQuestions(quizId);
-                
+        public IActionResult OnGet(int quizId, int questionId)
+        {
+            // Logged in check
+            if ((userID = getUserId()) == null) { authErrorPage(); }
 
-                if (flashcards == null) 
-				{
-                    return errorPage("@Playing - Unable to fetch quiz questions.");
-                }
+            var flashcardSet = _libraryService.GetUserQuiz(quizId);
 
-				if (!flashcards.Any())
-				{
-					return RedirectToPage("../Library/Index");
-				}
+            // Quiz access check
+            if (flashcardSet.UserId != userID)
+            {
+                return errorPage("@Playing - You do not have access to this quiz.");
+            }
 
-				//details unused by view pls remove
-				Details = _playingService.InitPlayDetails(
-					flashcards: flashcards,
-					flashcardSet: flashcardSet
-					);
+            var flashcards = _libraryService.GetQuizQuestions(quizId);
 
-				_playingService.SetToSession(
-					SessionKey: Constants.PlayingSessionKey,
-					session: HttpContext.Session,
-					details: Details
-					);
-				return Page();
-			}
-			else // Loading of any other flashcard
-			{
 
-                Details = _playingService.GetFromSession(
-					SessionKey: Constants.PlayingSessionKey,
-					session: HttpContext.Session
-				);
+            if (flashcards == null)
+            {
+                return errorPage("@Playing - Unable to fetch quiz questions.");
+            }
 
-                // Quiz access check
-                if (Details == null)
-                {
-                    return errorPage("@Playing - Details not initialized.");
-                }
-                //if quiz starts from 2 or further question 
-                if (Details.Quiz.UserId != userID)
-                {
-                    return errorPage("@Playing - You do not have access to this quiz.");
-                }
+            if (!flashcards.Any())
+            {
+                return RedirectToPage("../Library/Index");
+            }
 
-                Details.CurrentIndex = questionId;
+            //details unused by view pls remove
+            Details = _playingService.InitPlayDetails(
+                flashcards: flashcards,
+                flashcardSet: flashcardSet
+                );
 
-				_playingService.SetToSession(
-					SessionKey: Constants.PlayingSessionKey,
-					session: HttpContext.Session,
-					details: Details
-					);
+            if (Details != null && Details.Quiz != null)
+            {
+                Details.Quiz.Questions = _playingService.ShuffleByDifficulty(Details.Quiz.Questions);
+            }
 
-				if (!_playingService.isValid(Details))
-				{
-					return errorPage("quiz is null");
-				}
-				return Page();
-			}
+            _playingService.SetToSession(
+                SessionKey: Constants.PlayingSessionKey,
+                session: HttpContext.Session,
+                details: Details
+                );
 
-		}
+            return Page();
+        }
 
         public IActionResult OnGetNextFlashCardPartial(int quizId, int questionId)
         {
@@ -132,6 +101,10 @@ namespace Acuedify.Pages.Playing
         public JsonResult OnPostSubmitQuizResults([FromBody] QuizResultsModel results)
         {
             _libraryService.UpdateQuizResult(results);
+
+            //updates lastPlayed property
+            _libraryService.UpdateProperties(results.quizId);
+
             return new JsonResult(new { success = true });
         }
 

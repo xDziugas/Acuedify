@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acuedify.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231112142527_mssql.local_migration_107")]
-    partial class mssqllocal_migration_107
+    [Migration("20231114115241_mssql.local_migration_267")]
+    partial class mssqllocal_migration_267
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,6 +122,9 @@ namespace Acuedify.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Difficulty")
+                        .HasColumnType("int");
+
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
 
@@ -161,6 +164,9 @@ namespace Acuedify.Migrations
 
                     b.Property<int?>("FolderId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastPlayed")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PastScoresSerialized")
                         .HasColumnType("nvarchar(max)");

@@ -25,6 +25,8 @@ namespace Acuedify.Models
 
         public int TimesSolved { get; set; } = 0;
 
+        public DateTime? LastPlayed { get; set; } = null;
+
         public int? Ao3Score { get; set; } = null;
 
         //serialized list, so no new tables are created

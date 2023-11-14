@@ -1,6 +1,7 @@
 ﻿using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Playing.Interfaces;
+using NuGet.Protocol;
 using System.Collections.Immutable;
 
 namespace Acuedify.Services.Playing
@@ -45,6 +46,9 @@ namespace Acuedify.Services.Playing
             return flashcards;
         }
 
-
+        List<Question> IPlayingService.ShuffleByDifficulty(List<Question> flashcards)
+        {
+            return flashcards.OrderBy(question => question.Difficulty).ToList();
+        }
     }
 }

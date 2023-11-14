@@ -20,10 +20,10 @@ namespace Acuedify.Pages.Library
             this._libraryService = libraryService;
             this._userManager = userManager;
         }
-                        
-        public IEnumerable<Folder>? Folders { get; set; } 
+
+        public IEnumerable<Folder>? Folders { get; set; }
         public IEnumerable<Quiz>? Quizzes { get; set; }
-		public IEnumerable<Quiz>? Favourites { get; set; }
+        public IEnumerable<Quiz>? Favourites { get; set; }
 
         public void OnGet()
         {
@@ -51,12 +51,14 @@ namespace Acuedify.Pages.Library
                     Favourites = favourites;
                 }
             }
-            
+
+            //Sort quizzes in library by last played (doesn't sort quizzes in favorites tab)
+            Quizzes = _libraryService.SortByLastPlayed(Quizzes);
         }
 
 
         public IActionResult OnGetToggleFavorite(int id)
-		{
+        {
             if ((userID = getUserId()) == null) { authErrorPage(); }
 
             var quiz = _libraryService.GetUserQuiz(id);
@@ -76,7 +78,7 @@ namespace Acuedify.Pages.Library
 
 
             return RedirectToPage("Index");
-		}
+        }
 
         //WHERE IS CREATE FOLDER???
         private String? getUserId()

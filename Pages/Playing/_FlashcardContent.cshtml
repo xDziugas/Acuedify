@@ -6,10 +6,10 @@
     <div class="flashcard-container">
         <div class="flashcard" onclick="rotateCard(this)">
             <div class="card">
-                <div class="term" id="term">
+                <div class="term" id="term" style="user-select: none;">
                     @Model.Term
                 </div>
-                <div class="definition" id="definition">
+                <div class="definition" id="definition" style="user-select: none;">
                     @Model.Definition
                 </div>
             </div>

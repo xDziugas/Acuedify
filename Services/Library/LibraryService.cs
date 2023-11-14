@@ -159,5 +159,26 @@ namespace Acuedify.Services.Library
             }
         }
 
+        public bool UpdateProperties(int quizId)
+        {
+            try
+            {
+                var quiz = _dbContext.Quizzes.FirstOrDefault(q => q.Id == quizId);
+                quiz.LastPlayed = DateTime.UtcNow;
+                _dbContext.SaveChanges();
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return false;
+            }
+        }
+
+        IEnumerable<Quiz>? ILibraryService.SortByLastPlayed(IEnumerable<Quiz>? quizzes)
+        {
+            return quizzes?.OrderByDescending(quiz => quiz.LastPlayed);
+        }
     }
 }

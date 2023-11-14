@@ -14,5 +14,13 @@ namespace Acuedify.Models
         [ForeignKey("QuizId")]
         public int QuizId { get; set; }
         public string? UserId { get; set; } = null;
+        public Difficulty Difficulty { get; set; } = 0;
+    }
+
+    public enum Difficulty
+    {
+        EASY = 1,
+        MEDIUM,
+        HARD
     }
 }

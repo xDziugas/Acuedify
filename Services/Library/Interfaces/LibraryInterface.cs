@@ -2,8 +2,8 @@
 
 namespace Acuedify.Services.Library.Interfaces
 {
-	public interface ILibraryService
-	{
+    public interface ILibraryService
+    {
         List<Quiz> GetUserQuizzes(string userId);
         Quiz GetUserQuiz(int quizId);
         List<Folder> GetUserFolders(string userId);
@@ -12,5 +12,7 @@ namespace Acuedify.Services.Library.Interfaces
         bool DeleteUserQuiz(int quizId);
         List<Question> GetQuizQuestions(int quizId);
         bool UpdateQuizResult(QuizResultsModel result);
+        bool UpdateProperties(int quizId);
+        IEnumerable<Quiz>? SortByLastPlayed(IEnumerable<Quiz>? quizzes);
     }
 }
