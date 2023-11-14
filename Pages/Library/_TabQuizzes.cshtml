@@ -50,7 +50,31 @@
 								<svg width="16" height="16" viewBox="0 0 16 16">
 									<use xlink:href="Icons/Icons.svg#icon-delete"></use>
 								</svg>
+
 							</a>
+							<!-- Dropdown button for folder selection -->
+							<div class="btn-group">
+								<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<svg width="16" height="16" viewBox="0 0 16 16">
+										<use xlink:href="Icons/Icons.svg#icon-folder"></use>
+									</svg>
+								</button>
+								<div class="dropdown-menu">
+									<a asp-page-handler="ToggleFolderChange" asp-route-quizId="@quiz.Id" class="dropdown-item not-in-folder">
+										<svg width="16" height="16" viewBox="0 0 16 16">
+											<use xlink:href="Icons/Icons.svg#icon-delete"></use>
+										</svg>
+										No Folder
+									</a>
+									@foreach (var otherFolder in Model.Folders.Where(f => f.Id != quiz.FolderId))
+									{
+										<a asp-page-handler="ToggleFolderChange" asp-route-quizId="@quiz.Id" asp-route-newFolderId="@otherFolder.Id" class="dropdown-item">
+											@otherFolder.Name
+										</a>
+									}
+								</div>
+							</div>
+							<!-- End Dropdown -->
 						</td>
 					</tr>
 				}

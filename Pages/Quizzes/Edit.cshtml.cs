@@ -49,24 +49,14 @@ namespace Acuedify.Pages.Quizzes
 
             return Page();
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //FIXXXXX
+
         public async Task<IActionResult> OnPost(int id, Quiz quiz)
         {   
             if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
-            System.Diagnostics.Debug.WriteLine(quiz.Id);
-            System.Diagnostics.Debug.WriteLine(id);
-            //fix this
-            this.quiz = quiz;
-            if (id != quiz.Id)
-            {
-                return errorPage("@Quizzes/Edit - Editted quiz not found."); // when does that happen? (for vlad by vlad)
-            }
 
             if(quiz.UserId != userID) 
             {
                 return errorPage("@Quizzes/Edit - You do not have access to this quiz");
-                //belenkai gera daina per spotifaju pasileidau katik
             }
 
             if (ModelState.IsValid)

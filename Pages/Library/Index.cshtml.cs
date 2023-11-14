@@ -78,8 +78,33 @@ namespace Acuedify.Pages.Library
             return RedirectToPage("Index");
 		}
 
-        //WHERE IS CREATE FOLDER???
-        private String? getUserId()
+		public IActionResult OnGetToggleFolderChange(int quizId, int? newFolderId)
+		{
+			if ((userID = getUserId()) == null) { authErrorPage(); }
+
+			var quiz = _libraryService.GetUserQuiz(quizId);
+			if (quiz.UserId != userID)
+			{
+				RedirectToPage("../Error", new { errormessage = "@Library/Index(ToggleFolderChange) - You do not have access to this quiz." });
+			}
+
+			if (quiz != null)
+			{
+				quiz.FolderId = newFolderId;
+				_libraryService.UpdateUserQuiz(quiz);
+			}
+			else
+			{
+				RedirectToPage("../Error", new { errormessage = "@Library/Index(ToggleFolderChange) - Couldn't fetch quiz." });
+			}
+
+
+			return RedirectToPage("Index");
+		}
+
+
+
+		private String? getUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
