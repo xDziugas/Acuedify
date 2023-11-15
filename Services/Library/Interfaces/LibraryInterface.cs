@@ -11,5 +11,7 @@ namespace Acuedify.Services.Library.Interfaces
 		bool UpdateUserQuiz(Quiz updatedQuiz);
 		bool DeleteUserQuiz(int quizId);
 		List<Question> GetQuizQuestions(int quizId);
-	}
+        Folder GetFolder(int folderId);
+        bool DeleteFolder(int folderId);
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Acuedify.Services.Library
 {
@@ -98,7 +99,45 @@ namespace Acuedify.Services.Library
 				.ToList() ?? new List<Folder>();
 		}
 
-		List<Question> ILibraryService.GetQuizQuestions(int quizId)
+        public Folder? GetFolder(int folderId)
+        {
+			return _dbContext.Folders?
+				.Where(folder => folder.Id == folderId)
+                .Include(folder => folder.Quizzes)
+                .FirstOrDefault();
+        }
+
+        public bool DeleteFolder(int folderId)
+        {
+            try
+            {
+				var folderToDelete = GetFolder(folderId);
+
+                if (folderToDelete == null)
+                {
+                    return false;
+                }
+
+				foreach (var quiz in folderToDelete.Quizzes)
+				{
+					quiz.FolderId = null;
+					_dbContext.Quizzes.Update(quiz);
+				}
+
+                _dbContext.Folders
+                    .Remove(folderToDelete);
+
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return false;
+            }
+        }
+
+        List<Question> ILibraryService.GetQuizQuestions(int quizId)
 		{
 			var questions = _dbContext.Quizzes
 				.Where(quiz => quiz.Id == quizId).SelectMany(quiz => quiz.Questions).ToList();
