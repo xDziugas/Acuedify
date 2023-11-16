@@ -1,7 +1,7 @@
 using Acuedify.Data;
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
 using Acuedify.Services.Folders;
-using Acuedify.Services.Questions.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,10 +13,12 @@ namespace Acuedify.Pages.Folders
     public class CreateModel : PageModel
     {
         private readonly FolderService _folderService;
+        private readonly IAuthService _authService;
 
-        public CreateModel(FolderService folderService)
+        public CreateModel(FolderService folderService, IAuthService authService)
         {
             _folderService = folderService;
+            _authService = authService; 
         }
 
         public Folder? Folder { get; set; }
@@ -28,9 +30,11 @@ namespace Acuedify.Pages.Folders
 
         public async Task<IActionResult> OnPost(Folder folder)
         {
+            String? userId = _authService.GetUserId(); 
+            if (userId == null) {}
             if (ModelState.IsValid)
             {
-                folder.UserId = getUserId();
+                folder.UserId = userId
                 _folderService.CreateFolder(folder);
                 return RedirectToPage("../Library/Index");
             }
@@ -38,9 +42,5 @@ namespace Acuedify.Pages.Folders
             return Page();
         }
 
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
     }
 }

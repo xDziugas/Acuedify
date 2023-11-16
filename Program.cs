@@ -3,10 +3,12 @@ using Acuedify.Services.Library;
 using Acuedify.Services.Playing;
 using Acuedify.Services.Questions;
 using Acuedify.Services.Auth;
+using Acuedify.Services.Error;
 using Acuedify.Services.Library.Interfaces;
 using Acuedify.Services.Playing.Interfaces;
 using Acuedify.Services.Questions.Interfaces;
 using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Acuedify.Models;
@@ -25,6 +27,7 @@ builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IPlayingService, PlayingService>();
 builder.Services.AddScoped<IQuestionsService, QuestionsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IErrorService, ErrorService>();
 builder.Services.AddScoped<FolderService, FolderService>();
 
 

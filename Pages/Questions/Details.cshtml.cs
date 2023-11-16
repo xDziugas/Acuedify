@@ -1,5 +1,6 @@
 using Acuedify.Data;
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,16 +13,19 @@ namespace Acuedify.Pages.Questions
     public class DetailsModel : PageModel
     {
         private readonly AppDBContext _context;
+        private readonly IAuthService _authService;
         private string? userID;
 
-        public DetailsModel(AppDBContext context)
+        public DetailsModel(AppDBContext context, IAuthService authService)
         {
             _context = context;
+            _authService = authService;
         }
 
         public Question? question { get; set; }
         public async Task<IActionResult> OnGet(int? id)
         {
+            String? test = _authService.GetUserId();
             if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
 
             if (id == null)

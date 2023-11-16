@@ -13,10 +13,13 @@ namespace Acuedify.Services.Auth
         
         String? IAuthService.GetUserId()
         {
+            //System.Diagnostics.Trace.WriteLine(string.Join(Environment.NewLine, _httpContextAccessor.HttpContext.GetRouteData().Values));
+            
             return _httpContextAccessor
                 .HttpContext?
                 .User
                 .FindFirstValue(ClaimTypes.NameIdentifier);
+
         }
 
         bool IAuthService.AuthorizeAsync(Quiz quiz)

@@ -1,6 +1,7 @@
 using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Questions.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,12 +16,14 @@ namespace Acuedify.Pages.Questions
     {
         private readonly AppDBContext _context;
         private readonly IQuestionsService _questionsService;
+        private readonly IErrorService _e;
         private string? userID;
 
-        public EditModel(AppDBContext context, IQuestionsService questionsService)
+        public EditModel(AppDBContext context, IQuestionsService questionsService, IErrorService errorService)
         {
             _context = context;
             _questionsService = questionsService;
+            _e = errorService;
         }
 
         public Question? question { get; set; }
@@ -43,7 +46,7 @@ namespace Acuedify.Pages.Questions
 
             if (question == null)
             {
-                return errorPage("@Questions/Edit - Question not found.");
+                return _e.ErrorPage(this, "question not found");
             }
 
             if (question.UserId != userID) // Question access check
