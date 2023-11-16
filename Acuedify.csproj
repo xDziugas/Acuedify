@@ -44,6 +44,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\" />
+    <Folder Include="Services\Authorization\Interfaces\" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
   </ItemGroup>
 
