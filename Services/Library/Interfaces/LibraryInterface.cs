@@ -11,6 +11,7 @@ namespace Acuedify.Services.Library.Interfaces
         bool UpdateUserQuiz(Quiz updatedQuiz);
         bool DeleteUserQuiz(int quizId);
         List<Question> GetQuizQuestions(int quizId);
+        int? CalculateAverageScore(int quizId);
         bool UpdateQuizResult(QuizResultsModel result);
         bool UpdateProperties(int quizId);
         IEnumerable<Quiz>? SortByLastPlayed(IEnumerable<Quiz>? quizzes);

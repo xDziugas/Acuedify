@@ -109,6 +109,33 @@ namespace Acuedify.Services.Library
             return questions;
         }
 
+        int? ILibraryService.CalculateAverageScore(int quizId)
+        {
+            try
+            {
+                var quiz = _dbContext.Quizzes.FirstOrDefault(q => q.Id == quizId);
+
+                var questions = _dbContext.Quizzes
+                .Where(quiz => quiz.Id == quizId).SelectMany(quiz => quiz.Questions).ToList();
+
+                var pastScores = quiz.PastScores;
+
+                if (pastScores.IsNullOrEmpty())
+                {
+                    return 0;
+                }
+                else
+                {
+                    return (int)((pastScores.Average() / questions.Count) * 100);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return null;
+            }
+        }
+
         bool ILibraryService.UpdateQuizResult(QuizResultsModel result)
         {
             try
@@ -117,8 +144,6 @@ namespace Acuedify.Services.Library
 
                 var questions = _dbContext.Quizzes
                 .Where(quiz => quiz.Id == result.quizId).SelectMany(quiz => quiz.Questions).ToList();
-
-                var totalQuestions = questions.Count;
 
                 if (quiz == null)
                 {
@@ -135,16 +160,6 @@ namespace Acuedify.Services.Library
                 }
 
                 pastScores.Add(result.correct);
-
-                // percentage of correct answers
-                if (pastScores.IsNullOrEmpty())
-                {
-                    quiz.Ao3Score = 0;
-                }
-                else
-                {
-                    quiz.Ao3Score = (int)((pastScores.Average() / totalQuestions) * 100);
-                }
 
                 quiz.PastScores = pastScores;
 
