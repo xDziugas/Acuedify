@@ -10,8 +10,8 @@ namespace Acuedify.Services.Auth
         public AuthService(IHttpContextAccessor httpContextAccessor) {
             _httpContextAccessor = httpContextAccessor;
         }
-
-        String? getUserId()
+        
+        String? IAuthService.GetUserId()
         {
             return _httpContextAccessor
                 .HttpContext?
@@ -21,27 +21,27 @@ namespace Acuedify.Services.Auth
 
         bool IAuthService.AuthorizeAsync(Quiz quiz)
         {
-            var userId = getUserId();
+            var userId = ((IAuthService)this).GetUserId();
             if (userId == null || quiz.UserId == userId) { return false; }
             else { return true; }
         }
 
         bool IAuthService.AuthorizeAsync(Question question)
         {
-            var userId = getUserId();
+            var userId = ((IAuthService)this).GetUserId();
             if (userId == null || question.UserId == userId) { return false; }
             else { return true; }
         }
 
         //Also uncomment in interface
-/*
-        bool IAuthService.AuthorizeAsync(Folder folder)
-        {
-            var userId = getUserId();
-            if (userId == null || folder.UserId == userId) { return false; }
-            else { return true; }
-        }
-*/
+        /*
+                bool IAuthService.AuthorizeAsync(Folder folder)
+                {
+                    var userId = ((IAuthService)this).GetUserId();
+                    if (userId == null || folder.UserId == userId) { return false; }
+                    else { return true; }
+                }
+        */
 
     }
 }
