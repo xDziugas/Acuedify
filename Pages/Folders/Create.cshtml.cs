@@ -1,5 +1,6 @@
 using Acuedify.Data;
 using Acuedify.Models;
+using Acuedify.Services.Folders;
 using Acuedify.Services.Questions.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +12,14 @@ namespace Acuedify.Pages.Folders
     [Authorize]
     public class CreateModel : PageModel
     {
-        private readonly AppDBContext _context;
-        private string? _userID;
+        private readonly FolderService _folderService;
 
-        public CreateModel(AppDBContext context)
+        public CreateModel(FolderService folderService)
         {
-            _context = context;
+            _folderService = folderService;
         }
-        public Folder? folder { get; set; }
+
+        public Folder? Folder { get; set; }
 
         public void OnGet()
         {
@@ -27,36 +28,19 @@ namespace Acuedify.Pages.Folders
 
         public async Task<IActionResult> OnPost(Folder folder)
         {
-            if ((_userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
-
             if (ModelState.IsValid)
             {
-                folder.UserId = _userID;
-                _context.Add(folder);
-                await _context.SaveChangesAsync();
+                folder.UserId = getUserId();
+                _folderService.CreateFolder(folder);
                 return RedirectToPage("../Library/Index");
             }
 
             return Page();
         }
 
-
-
-
-
-
-        //auth helper functions
         private String? getUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-        private RedirectToPageResult authErrorPage()
-        {
-            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
-        }
-        private RedirectToPageResult errorPage(String errorMessage)
-        {
-            return RedirectToPage("../Error", new { errormessage = errorMessage });
         }
     }
 }

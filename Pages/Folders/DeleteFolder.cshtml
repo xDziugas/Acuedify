@@ -1,0 +1,29 @@
+﻿@page
+@model Acuedify.Pages.Folders.DeleteFolderModel
+@{
+}
+
+<form method="post" asp-page="DeleteFolder" asp-page-handler="Confirm" asp-route-folderId="@Model.Folder.Id">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Folder</h2>
+            <hr />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Folder.Name"></label>
+            <input asp-for="Folder.Name" disabled class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+        <a asp-page="Index" class="btn btn-secondary" style="width:150px">
+            Back to list
+        </a>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
