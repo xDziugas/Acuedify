@@ -1,12 +1,10 @@
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Folders;
-using Acuedify.Services.Library;
-using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 
 namespace Acuedify.Pages.Folders
 {
@@ -15,26 +13,30 @@ namespace Acuedify.Pages.Folders
     public class DeleteFolderModel : PageModel
     {
         private readonly FolderService _folderService;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public DeleteFolderModel(FolderService folderService)
+        public DeleteFolderModel(FolderService folderService, 
+            IAuthService authService, IErrorService errorService)
         {
             _folderService = folderService;
+            _authService = authService;
+            _errorService = errorService;
         }
+
         public Folder? Folder { get; set; }
 
         public IActionResult OnGet(int folderId)
         {
-
             Folder = _folderService.FindFolder(folderId);
 
             if (Folder == null)
             {
-                return NotFound();
+                return _errorService.ErrorPage(this, "folder not found");
             }
-            if (Folder.UserId != getUserId())
-            {
-                return Forbid();
-            }
+
+            //authorization check
+            if ( ! _authService.Authorized(Folder) ) { return Forbid(); }
 
             return Page();
         }
@@ -47,26 +49,15 @@ namespace Acuedify.Pages.Folders
 
             if (folderToDelete == null)
             {
-                return NotFound();
+                return _errorService.ErrorPage(this, "folder to delete not found");
             }
-            if (folderToDelete.UserId != getUserId())
-            {
-                return Forbid();
-            }
+
+            //authorization check
+            if ( ! _authService.Authorized(folderToDelete) ) { return Forbid(); }
 
             _folderService.DeleteFolder(folderToDelete);
 
-            return RedirectToPage("../Library/Index");
-        }
-
-
-
-
-
-        //auth helper functions
-        private string? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return RedirectToPage("/Library/Index");
         }
     }
 }

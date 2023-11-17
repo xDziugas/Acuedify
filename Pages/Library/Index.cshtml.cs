@@ -1,11 +1,11 @@
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Folders;
 using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 
 namespace Acuedify.Pages.Library
 {
@@ -14,14 +14,17 @@ namespace Acuedify.Pages.Library
     {
         private readonly ILibraryService _libraryService;
         private readonly FolderService _folderService;
-        private readonly UserManager<AcuedifyUser> _userManager;
-        private string? userID;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public IndexModel(ILibraryService libraryService, FolderService folderService, UserManager<AcuedifyUser> userManager)
+        public IndexModel(ILibraryService libraryService, 
+            FolderService folderService,
+            IAuthService authService, IErrorService errorService)
         {
             _libraryService = libraryService;
             _folderService = folderService;
-            _userManager = userManager;
+            _authService = authService;
+            _errorService = errorService;
         }
 
         public IEnumerable<Folder>? Folders { get; set; }
@@ -30,15 +33,15 @@ namespace Acuedify.Pages.Library
 
         public void OnGet()
         {
-            if ((userID = getUserId()) == null) { authErrorPage(); }
+            String? userId = _authService.GetUserId();
 
-            Folders = _folderService.GetUserFolders(userID);
-            Quizzes = _libraryService.GetUserQuizzes(userID);
+            Folders = _folderService.GetUserFolders(userId);
+            Quizzes = _libraryService.GetUserQuizzes(userId);
             var favourites = new List<Quiz>();
 
             if (Quizzes == null)
             {
-                RedirectToPage("../Error", new { errormessage = "@Library/Index - Could not retrieve quizzes from the db." });
+                _errorService.ErrorPage(this, "quizzes not found");
             }
             else
             {
@@ -57,21 +60,21 @@ namespace Acuedify.Pages.Library
 
         public IActionResult OnGetToggleFavorite(int id)
         {
-            if ((userID = getUserId()) == null) { authErrorPage(); }
-
             var quiz = _libraryService.GetUserQuiz(id);
-            if (quiz.UserId != userID)
+
+            //authorization check
+            if (!_authService.Authorized(quiz)) { return Forbid(); }
+
+
+            if (quiz == null)
             {
-                RedirectToPage("../Error", new { errormessage = "@Library/Index(ToggleFavorite) - You do not have access to this quiz." });
+                return _errorService.ErrorPage(this, "quiz not found");
             }
-            if (quiz != null)
+
+            else
             {
                 quiz.isFavorite = !quiz.isFavorite;
                 _libraryService.UpdateUserQuiz(quiz);
-            }
-            else
-            {
-                RedirectToPage("../Error", new { errormessage = "@Library/Index(ToggleFavorite) - Couldn't fetch quiz." });
             }
 
 
@@ -82,26 +85,24 @@ namespace Acuedify.Pages.Library
         {
             var quiz = _libraryService.GetUserQuiz(quizId);
 
+
             if (quiz == null)
             {
-                return NotFound();
+                return _errorService.ErrorPage(this, "quiz not found");
             }
-            if (quiz.UserId != getUserId())
-            {
-                return Forbid();
-            }
+
+            //quiz authorization check
+            if (!_authService.Authorized(quiz)) { return Forbid(); }
 
             if (newFolderId != null)
             {
                 var folder = _folderService.FindFolder(newFolderId.Value);
                 if (folder == null)
                 {
-                    return NotFound();
+                    return _errorService.ErrorPage(this, "folder not found");
                 }
-                if (folder.UserId != getUserId())
-                {
-                    return Forbid();
-                }
+                //folder authorization check
+                if (!_authService.Authorized(folder)) { return Forbid(); }
             }
 
             quiz.FolderId = newFolderId;
@@ -109,17 +110,5 @@ namespace Acuedify.Pages.Library
 
             return RedirectToPage("Index");
         }
-
-
-
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-        private RedirectToPageResult authErrorPage()
-        {
-            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
-        }
-
     }
 }

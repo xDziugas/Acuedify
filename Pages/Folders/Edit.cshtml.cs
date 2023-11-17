@@ -1,9 +1,11 @@
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Folders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace Acuedify.Pages.Folders
 {
@@ -11,39 +13,44 @@ namespace Acuedify.Pages.Folders
     public class EditModel : PageModel
     {
         private readonly FolderService _folderService;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public EditModel(FolderService folderSerivce)
+        public EditModel(FolderService folderSerivce,
+            IAuthService authService, IErrorService errorService)
         {
             _folderService = folderSerivce;
+            _authService = authService;
+            _errorService = errorService;
         }
 
         public Folder? Folder { get; set; }
 
-        public async Task<IActionResult> OnGet(int folderId)
+        public IActionResult OnGet(int folderId)
         {
+            String? userId = _authService.GetUserId();
 
             Folder = _folderService.FindFolder(folderId);
 
             if (Folder == null)
             {
-                return NotFound();
+                return _errorService.ErrorPage(this, "folder not found");
             }
-			if (Folder.UserId != getUserId())
-			{
-				return Forbid();
-			}
 
-			return Page();
+            //authorization check
+            if ( ! _authService.Authorized(Folder) ) { return Forbid(); }
+
+            return Page();
         }
 
 
-        public async Task<IActionResult> OnPost(Folder folder)
-        {   
+        public IActionResult OnPost(Folder folder)
+        {
+            String? userId = _authService.GetUserId();
 
-            if(folder.UserId != getUserId()) 
-            {
-                return Forbid();
-            }
+            //authorization check
+            if ( ! _authService.Authorized(folder) ) { return Forbid(); } 
+
 
             if (ModelState.IsValid)
             {
@@ -53,16 +60,5 @@ namespace Acuedify.Pages.Folders
             Folder = folder;
             return Page();
         }
-
-
-
-
-
-        //auth helper functions
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-
     }
 }

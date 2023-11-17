@@ -1,5 +1,7 @@
 using Acuedify.Data;
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Questions.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +16,16 @@ namespace Acuedify.Pages.Questions
     {
         private readonly AppDBContext _context;
         private readonly IQuestionsService _questionsService;
-        private string? userID;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public CreateModel(AppDBContext context, IQuestionsService questionsService)
+        public CreateModel(AppDBContext context, IQuestionsService questionsService,
+            IAuthService authService, IErrorService errorService)
         {
             _context = context;
             _questionsService = questionsService;
+            _authService = authService;
+            _errorService = errorService;
         }
 
         public Question? question { get; set; }
@@ -27,22 +33,21 @@ namespace Acuedify.Pages.Questions
 
         public IActionResult OnGet()
         {
-            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
+            String? userId = _authService.GetUserId();
 
-            QuizIds = _questionsService.GetQuizIdsAsSelectListItems(-1, userID);
+            QuizIds = _questionsService.GetQuizIdsAsSelectListItems(-1, userId);
             return Page();
         }
 
         public async Task<IActionResult> OnPost(Question question)
         {
-            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
-
+            
             if (question == null)
             {
-                return errorPage("@Questions/Create - Could not fetch question from POST");
+                return _errorService.ErrorPage(this, "created question not found");
             }
 
-            question.UserId = userID;
+            question.UserId = _authService.GetUserId();
 
             if (ModelState.IsValid)
             {
@@ -51,27 +56,6 @@ namespace Acuedify.Pages.Questions
                 return RedirectToPage("Index");
             }
             return Page();
-        }
-
-
-
-
-
-
-
-
-        //auth helper functions
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-        private RedirectToPageResult authErrorPage()
-        {
-            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
-        }
-        private RedirectToPageResult errorPage(String errorMessage)
-        {
-            return RedirectToPage("../Error", new { errormessage = errorMessage });
         }
     }
 }

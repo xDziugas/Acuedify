@@ -13,7 +13,6 @@ namespace Acuedify.Services.Auth
         
         String? IAuthService.GetUserId()
         {
-            //System.Diagnostics.Trace.WriteLine(string.Join(Environment.NewLine, _httpContextAccessor.HttpContext.GetRouteData().Values));
             
             return _httpContextAccessor
                 .HttpContext?
@@ -22,29 +21,31 @@ namespace Acuedify.Services.Auth
 
         }
 
-        bool IAuthService.AuthorizeAsync(Quiz quiz)
+        bool IAuthService.Authorized(Quiz quiz)
         {
             var userId = ((IAuthService)this).GetUserId();
-            if (userId == null || quiz.UserId == userId) { return false; }
+/*
+            System.Diagnostics.Trace.WriteLine("user id: " + userId);
+            System.Diagnostics.Trace.WriteLine("quiz user id: " + quiz.UserId);
+*/
+            if (userId == null || quiz.UserId != userId) { return false; }
             else { return true; }
         }
 
-        bool IAuthService.AuthorizeAsync(Question question)
+        bool IAuthService.Authorized(Question question)
         {
             var userId = ((IAuthService)this).GetUserId();
-            if (userId == null || question.UserId == userId) { return false; }
+            if (userId == null || question.UserId != userId) { return false; }
             else { return true; }
         }
 
-        //Also uncomment in interface
-        /*
-                bool IAuthService.AuthorizeAsync(Folder folder)
-                {
-                    var userId = ((IAuthService)this).GetUserId();
-                    if (userId == null || folder.UserId == userId) { return false; }
-                    else { return true; }
-                }
-        */
+        bool IAuthService.Authorized(Folder folder)
+        {
+            var userId = ((IAuthService)this).GetUserId();
+            if (userId == null || folder.UserId != userId) { return false; }
+            else { return true; }
+        }
+
 
     }
 }
