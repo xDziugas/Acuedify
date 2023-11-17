@@ -28,9 +28,11 @@
     </dl>
 
     <form method="post">
+        <input type="hidden" asp-for="Question" />
         <input type="hidden" asp-for="Question.Id" />
+        <input type="hidden" asp-for="Question.UserId" />
         <input asp-page="Delete" type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-page="/Questions/Index">Back to List</a>
     </form>
 </div>
 

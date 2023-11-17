@@ -24,6 +24,7 @@ namespace Acuedify.Pages.Questions
             _authService = authService;
             _errorService = errorService;
         }
+        [BindProperty]
         public Question? Question { get; set; }
         public async Task<IActionResult> OnGet(int? id)
         {
@@ -50,20 +51,23 @@ namespace Acuedify.Pages.Questions
             return Page();
         }
 
-        public async Task<IActionResult> OnPost(Question question)
+        public async Task<IActionResult> OnPost()
         {
-            
+            if (Question == null)
+            {
+                _errorService.ErrorPage(this, "question not found");
+            }
+
             if (_context.Question == null)
             {
                 return _errorService.ErrorPage(this, "Questions not found");
             }
-
-            if (question != null)
+            if (Question != null)
             {
                 //authorization check
-                if (!_authService.Authorized(question)) { return Forbid(); }
+                if (!_authService.Authorized(Question)) { return Forbid(); }
 
-                _context.Question.Remove(question);
+                _context.Question.Remove(Question);
             }
 
             await _context.SaveChangesAsync();
