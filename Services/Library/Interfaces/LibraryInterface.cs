@@ -17,3 +17,4 @@ namespace Acuedify.Services.Library.Interfaces
         IEnumerable<Quiz>? SortByLastPlayed(IEnumerable<Quiz>? quizzes);
     }
 }
+

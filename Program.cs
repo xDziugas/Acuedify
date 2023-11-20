@@ -8,6 +8,7 @@ using Acuedify.Services.Questions.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Acuedify.Models;
+using Acuedify.Services.Folders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddDefaultIdentity<AcuedifyUser>(options => options.SignIn.Requ
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IPlayingService, PlayingService>();
 builder.Services.AddScoped<IQuestionsService, QuestionsService>();
+builder.Services.AddScoped<FolderService, FolderService>();
+
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

@@ -1,4 +1,5 @@
 using Acuedify.Models;
+using Acuedify.Services.Folders;
 using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,13 +13,15 @@ namespace Acuedify.Pages.Library
     public class IndexModel : PageModel
     {
         private readonly ILibraryService _libraryService;
+        private readonly FolderService _folderService;
         private readonly UserManager<AcuedifyUser> _userManager;
         private string? userID;
 
-        public IndexModel(ILibraryService libraryService, UserManager<AcuedifyUser> userManager)
+        public IndexModel(ILibraryService libraryService, FolderService folderService, UserManager<AcuedifyUser> userManager)
         {
-            this._libraryService = libraryService;
-            this._userManager = userManager;
+            _libraryService = libraryService;
+            _folderService = folderService;
+            _userManager = userManager;
         }
 
         public IEnumerable<Folder>? Folders { get; set; }
@@ -28,28 +31,25 @@ namespace Acuedify.Pages.Library
         public void OnGet()
         {
             if ((userID = getUserId()) == null) { authErrorPage(); }
+
+            Folders = _folderService.GetUserFolders(userID);
+            Quizzes = _libraryService.GetUserQuizzes(userID);
+            var favourites = new List<Quiz>();
+
+            if (Quizzes == null)
+            {
+                RedirectToPage("../Error", new { errormessage = "@Library/Index - Could not retrieve quizzes from the db." });
+            }
             else
             {
-                Folders = _libraryService.GetUserFolders(userID);
-                Quizzes = _libraryService.GetUserQuizzes(userID);
-                var favourites = new List<Quiz>();
-
-
-                if (Quizzes == null)
+                foreach (Quiz quiz in Quizzes)
                 {
-                    RedirectToPage("../Error", new { errormessage = "@Library/Index - Could not retrieve quizzes from the db." });
-                }
-                else
-                {
-                    foreach (Quiz quiz in Quizzes)
+                    if (quiz.isFavorite)
                     {
-                        if (quiz.isFavorite)
-                        {
-                            favourites.Add(quiz);
-                        }
+                        favourites.Add(quiz);
                     }
-                    Favourites = favourites;
                 }
+                Favourites = favourites;
             }
 
             //Sort quizzes in library by last played (doesn't sort quizzes in favorites tab)
@@ -80,7 +80,38 @@ namespace Acuedify.Pages.Library
             return RedirectToPage("Index");
         }
 
-        //WHERE IS CREATE FOLDER???
+        public IActionResult OnGetToggleFolderChange(int quizId, int? newFolderId)
+        {
+            var quiz = _libraryService.GetUserQuiz(quizId);
+
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+            if (quiz.UserId != getUserId())
+            {
+                return Forbid();
+            }
+
+            if (newFolderId != null)
+            {
+                var folder = _folderService.FindFolder(newFolderId.Value);
+                if (folder == null)
+                {
+                    return NotFound();
+                }
+                if (folder.UserId != getUserId())
+                {
+                    return Forbid();
+                }
+            }
+
+            quiz.FolderId = newFolderId;
+            _libraryService.UpdateUserQuiz(quiz);
+
+            return RedirectToPage("Index");
+        }
+
         private String? getUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
