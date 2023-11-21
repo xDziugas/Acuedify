@@ -52,6 +52,8 @@ namespace Acuedify.Pages.Library
                 Favourites = favourites;
             }
 
+            //Sort quizzes in library by last played (doesn't sort quizzes in favorites tab)
+            Quizzes = _libraryService.SortByLastPlayed(Quizzes);
         }
 
 
@@ -109,8 +111,6 @@ namespace Acuedify.Pages.Library
 
             return RedirectToPage("Index");
         }
-
-
 
         private String? getUserId()
         {

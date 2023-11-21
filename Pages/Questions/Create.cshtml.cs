@@ -21,6 +21,7 @@ namespace Acuedify.Pages.Questions
             _context = context;
             _questionsService = questionsService;
         }
+        //[BindProperty]
 
         public Question? question { get; set; }
         public List<SelectListItem> QuizIds { get; set; }
@@ -52,8 +53,6 @@ namespace Acuedify.Pages.Questions
             }
             return Page();
         }
-
-
 
 
 

@@ -9,5 +9,7 @@ namespace Acuedify.Services.Playing.Interfaces
 		public void SetToSession(string SessionKey, PlayDetails details, ISession session);
 		public bool isValid(PlayDetails details);
 		public List<Question> ShuffleFlashcards(List<Question> flashcards);
+
+		public List<Question> ShuffleByDifficulty(List<Question> flashcards);
 	}
 }

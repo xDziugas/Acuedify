@@ -46,6 +46,7 @@ namespace Acuedify.Pages.Questions
 
             if (ModelState.IsValid)
             {
+                //question.UserId = getUserId();
                 _context.Add(question);
                 await _context.SaveChangesAsync();
                 return RedirectToPage("../Quizzes/Edit", new { quizId = question.QuizId });

@@ -29,16 +29,16 @@ namespace Acuedify.Pages.Questions
         public async Task<IActionResult> OnGet(int? id)
         {
             if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
-            if (id == null) 
+            if (id == null)
             {
                 return errorPage("@Questions/Edit - not provided with Id");
             }
 
-            if (_context.Question == null) 
+            if (_context.Question == null)
             {
                 return errorPage("@Questions/Edit - Something wrong with the database of Questions.");
             }
-        
+
             question = await _context.Question.FindAsync(id);
 
             if (question == null)

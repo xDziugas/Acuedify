@@ -1,48 +1,54 @@
 ﻿using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Playing.Interfaces;
+using NuGet.Protocol;
 using System.Collections.Immutable;
 
 namespace Acuedify.Services.Playing
 {
-	public class PlayingService : IPlayingService
-	{
-		PlayDetails IPlayingService.InitPlayDetails(Quiz flashcardSet, List<Question> flashcards)
-		{
-			PlayDetails details = new PlayDetails();
+    public class PlayingService : IPlayingService
+    {
+        PlayDetails IPlayingService.InitPlayDetails(Quiz flashcardSet, List<Question> flashcards)
+        {
+            PlayDetails details = new PlayDetails();
 
-			details.Quiz = flashcardSet;
+            details.Quiz = flashcardSet;
 
-			details.Quiz.Questions = flashcards;
+            details.Quiz.Questions = flashcards;
 
-			return details;
-		}
+            return details;
+        }
 
-		PlayDetails IPlayingService.GetFromSession(string SessionKey, ISession session)
-		{
-			return session.GetObject<PlayDetails>(SessionKey);
-		}
+        PlayDetails IPlayingService.GetFromSession(string SessionKey, ISession session)
+        {
+            return session.GetObject<PlayDetails>(SessionKey);
+        }
 
-		void IPlayingService.SetToSession(string SessionKey, PlayDetails details, ISession session)
-		{
-			session.SetObject(SessionKey, details);
-		}
+        void IPlayingService.SetToSession(string SessionKey, PlayDetails details, ISession session)
+        {
+            session.SetObject(SessionKey, details);
+        }
 
-		bool IPlayingService.isValid(PlayDetails details)
-		{
-			if (details == null || details.Quiz == null)
-			{
-				return false;
-			}
+        bool IPlayingService.isValid(PlayDetails details)
+        {
+            if (details == null || details.Quiz == null)
+            {
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		List<Question> IPlayingService.ShuffleFlashcards(List<Question> flashcards)
-		{
-			flashcards.Shuffle();
+        List<Question> IPlayingService.ShuffleFlashcards(List<Question> flashcards)
+        {
+            flashcards.Shuffle();
 
-			return flashcards;
-		}
-	}
+            return flashcards;
+        }
+
+        List<Question> IPlayingService.ShuffleByDifficulty(List<Question> flashcards)
+        {
+            return flashcards.OrderBy(question => question.Difficulty).ToList();
+        }
+    }
 }
