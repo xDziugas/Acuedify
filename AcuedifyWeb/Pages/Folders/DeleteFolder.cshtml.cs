@@ -22,10 +22,10 @@ namespace Acuedify.Pages.Folders
         }
         public Folder? Folder { get; set; }
 
-        public IActionResult OnGet(int folderId)
+        public async Task<IActionResult> OnGet(int folderId)
         {
 
-            Folder = _folderService.FindFolder(folderId);
+            Folder = await _folderService.FindFolder(folderId);
 
             if (Folder == null)
             {
@@ -40,9 +40,9 @@ namespace Acuedify.Pages.Folders
         }
 
 
-        public IActionResult OnPostConfirm(int folderId)
+        public async Task<IActionResult> OnPostConfirm(int folderId)
         {
-            var folderToDelete = _folderService.FindFolder(folderId);
+            var folderToDelete = await _folderService.FindFolder(folderId);
 
 
             if (folderToDelete == null)
@@ -54,7 +54,7 @@ namespace Acuedify.Pages.Folders
                 return Forbid();
             }
 
-            _folderService.DeleteFolder(folderToDelete);
+            await _folderService.DeleteFolder(folderToDelete);
 
             return RedirectToPage("../Library/Index");
         }

@@ -13,34 +13,34 @@ namespace Acuedify.Services.Folders
 			_dbContext = dbContext; 
 		}
 
-		public void CreateFolder(Folder folder)
+		public async Task CreateFolder(Folder folder)
 		{
 			_dbContext.Folders.Add(folder);
-			_dbContext.SaveChanges();
+			await _dbContext.SaveChangesAsync();
 		}
 
-		public void UpdateFolder(Folder folder)
+		public async Task UpdateFolder(Folder folder)
 		{
 			_dbContext.Folders.Update(folder);
-			_dbContext.SaveChanges();
+			await _dbContext.SaveChangesAsync();
 		}
 
-		public Folder? FindFolder(int folderId) 
+		public async Task<Folder?> FindFolder(int folderId) 
 		{ 
-			return _dbContext.Folders
+			return await _dbContext.Folders
 				.Include(folder => folder.Quizzes)
-                .FirstOrDefault(folder  => folder.Id == folderId);
+                .FirstOrDefaultAsync(folder  => folder.Id == folderId);
 		}
 
-		public List<Folder> GetUserFolders(string userId) 
+		public async Task<List<Folder>> FindUserFolders(string userId) 
 		{
-			return _dbContext.Folders
+			return await _dbContext.Folders
 				.Include(folder => folder.Quizzes)
 				.Where(folder => folder.UserId == userId)
-				.ToList();
+				.ToListAsync();
 		}
 
-		public void DeleteFolder(Folder folderToDelete)
+		public async Task DeleteFolder(Folder folderToDelete)
 		{
 			if (folderToDelete == null)
 			{
@@ -54,8 +54,7 @@ namespace Acuedify.Services.Folders
 			}
 
 			_dbContext.Folders.Remove(folderToDelete);
-			_dbContext.SaveChanges();
-
+			await _dbContext.SaveChangesAsync();
 		}
 
 	}

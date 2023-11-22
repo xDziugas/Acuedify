@@ -22,7 +22,7 @@ namespace Acuedify.Pages.Folders
         public async Task<IActionResult> OnGet(int folderId)
         {
 
-            Folder = _folderService.FindFolder(folderId);
+            Folder = await _folderService.FindFolder(folderId);
 
             if (Folder == null)
             {
@@ -47,7 +47,7 @@ namespace Acuedify.Pages.Folders
 
             if (ModelState.IsValid)
             {
-                _folderService.UpdateFolder(folder);
+                await _folderService.UpdateFolder(folder);
             }
 
             Folder = folder;

@@ -31,7 +31,7 @@ namespace Acuedify.Pages.Folders
             if (ModelState.IsValid)
             {
                 folder.UserId = getUserId();
-                _folderService.CreateFolder(folder);
+                await _folderService.CreateFolder(folder);
                 return RedirectToPage("../Library/Index");
             }
 
