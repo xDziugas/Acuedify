@@ -78,7 +78,7 @@ namespace Acuedify.Tests.UnitTests.Services.Folders
         }
 
         [Fact]
-        public void DeleteFolder__RequestToDeleteFolder__FolderIsDeletedAndQuizzesLeftWithoutFolder()
+        public async void DeleteFolder__RequestToDeleteFolder__FolderIsDeletedAndQuizzesLeftWithoutFolder()
         {
             var folderId = 1;
             _dbContext.Add(new Folder
