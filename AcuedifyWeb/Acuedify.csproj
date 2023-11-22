@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\css\StyleSheetPlaying.css" />
     <Content Remove="wwwroot\js\quiz.js" />
   </ItemGroup>
 
@@ -22,7 +21,6 @@
     <None Include="Pages\Shared\_Layout.cshtml" />
     <None Include="Pages\Shared\_LoginPartial.cshtml" />
     <None Include="Pages\Shared\_ValidationScriptsPartial.cshtml" />
-    <None Include="wwwroot\css\StyleSheetPlaying.css" />
     <None Include="wwwroot\Icons\Icons.svg" />
     <None Include="wwwroot\js\quiz.js" />
   </ItemGroup>
