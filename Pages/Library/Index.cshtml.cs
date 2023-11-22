@@ -1,10 +1,14 @@
 using Acuedify.Models;
 using Acuedify.Services.Folders;
+using Acuedify.Services.Library;
 using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
 namespace Acuedify.Pages.Library
@@ -15,18 +19,23 @@ namespace Acuedify.Pages.Library
         private readonly ILibraryService _libraryService;
         private readonly FolderService _folderService;
         private readonly UserManager<AcuedifyUser> _userManager;
+        private readonly LibraryUtils _libraryUtils;
+        private readonly IMemoryCache _cache;
         private string? userID;
 
-        public IndexModel(ILibraryService libraryService, FolderService folderService, UserManager<AcuedifyUser> userManager)
+        public IndexModel(ILibraryService libraryService, FolderService folderService, UserManager<AcuedifyUser> userManager, LibraryUtils libraryUtils, IMemoryCache cache)
         {
             _libraryService = libraryService;
             _folderService = folderService;
             _userManager = userManager;
+            _libraryUtils = libraryUtils;
+            _cache = cache;
         }
 
         public IEnumerable<Folder>? Folders { get; set; }
         public IEnumerable<Quiz>? Quizzes { get; set; }
         public IEnumerable<Quiz>? Favourites { get; set; }
+        public IEnumerable<Quiz>? filteredQuizzes { get; set; }
 
         public void OnGet()
         {
@@ -54,6 +63,16 @@ namespace Acuedify.Pages.Library
 
             //Sort quizzes in library by last played (doesn't sort quizzes in favorites tab)
             Quizzes = _libraryService.SortByLastPlayed(Quizzes);
+
+            if (!_cache.TryGetValue(Constants.LibrarySessionKey, out IEnumerable<Quiz> quizzes))
+            {
+                //keep in cache for 5 minutes if not accessed
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+                // Save the data in cache
+                _cache.Set(Constants.LibrarySessionKey, Quizzes, cacheEntryOptions);
+            }
         }
 
 
@@ -110,6 +129,19 @@ namespace Acuedify.Pages.Library
             _libraryService.UpdateUserQuiz(quiz);
 
             return RedirectToPage("Index");
+        }
+
+        public IActionResult OnGetSearch(string query)
+        {
+            _cache.TryGetValue(Constants.LibrarySessionKey, out IEnumerable<Quiz> cachedQuizzes);
+
+            filteredQuizzes = _libraryUtils.FilterQuizzes(query, cachedQuizzes ?? Enumerable.Empty<Quiz>());
+
+            return new PartialViewResult
+            {
+                ViewName = "_SearchResults",
+                ViewData = new ViewDataDictionary<IndexModel>(ViewData, this)
+            };
         }
 
         private String? getUserId()

@@ -23,6 +23,7 @@ builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IPlayingService, PlayingService>();
 builder.Services.AddScoped<IQuestionsService, QuestionsService>();
 builder.Services.AddScoped<FolderService, FolderService>();
+builder.Services.AddScoped<LibraryUtils, LibraryUtils>();
 
 
 builder.Services.AddDistributedMemoryCache();
