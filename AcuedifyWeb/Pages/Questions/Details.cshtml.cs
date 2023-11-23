@@ -1,5 +1,7 @@
 using Acuedify.Data;
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,59 +14,41 @@ namespace Acuedify.Pages.Questions
     public class DetailsModel : PageModel
     {
         private readonly AppDBContext _context;
-        private string? userID;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public DetailsModel(AppDBContext context)
+        public DetailsModel(AppDBContext context, IAuthService authService,
+            IErrorService errorService)
         {
             _context = context;
+            _authService = authService;
+            _errorService = errorService;
         }
 
         public Question? question { get; set; }
         public async Task<IActionResult> OnGet(int? id)
-        {
-            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
-
+        {            
             if (id == null)
             {
-                return errorPage("@Questions/Edit - not provided with Id");
+                return _errorService.ErrorPage(this, "no id provided");
             }
 
             if (_context.Question == null)
             {
-                return errorPage("@Questions/Details - No questions found");
+                return _errorService.ErrorPage(this, "questions not found");
             }
 
             question = await _context.Question.FirstOrDefaultAsync(m => m.Id == id);
+
             if (question == null)
             {
-                return errorPage("@Questions/Details - Question " + id + " not found");
+                return _errorService.ErrorPage(this, "question not found");
             }
 
-            if (question.UserId != userID) // Question access check
-            {
-                return errorPage("@Questions/Details - You do not have access to this question.");
-            }
+            //quiz authorization check
+            if (!_authService.Authorized(question)) { return Forbid(); }
 
             return Page();
-        }
-
-
-
-
-
-
-        //auth helper functions
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-        private RedirectToPageResult authErrorPage()
-        {
-            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
-        }
-        private RedirectToPageResult errorPage(String errorMessage)
-        {
-            return RedirectToPage("../Error", new { errormessage = errorMessage });
         }
     }
 }

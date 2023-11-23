@@ -1,5 +1,7 @@
 using Acuedify.Data;
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,49 +14,36 @@ namespace Acuedify.Pages.Questions
     public class IndexModel : PageModel
     {
 		private readonly AppDBContext _context;
-        private string? userID;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public IndexModel(AppDBContext context)
+        public IndexModel(AppDBContext context,
+            IAuthService authService, IErrorService errorService)
 		{
 			_context = context;
-		}
+            _authService = authService;
+            _errorService = errorService;
+        }
 
         public IEnumerable<Question> Questions { get; set; }
 		public async Task<IActionResult> OnGetAsync()
         {
-            // Logged in check
-            if ((userID = getUserId()) == null) { return authErrorPage(); }
+            String? userId = _authService.GetUserId();
 
             if (_context.Question != null)
             {
                 Questions = await _context.Question
-                    .Where(question => question.UserId == userID) // Question access filter
+                    .Where(question => question.UserId == userId)
+                    //or
+                    //.Where(question => _authService.Authorized(question))
                     .ToListAsync();
                 return Page();
             }
             else
             {
-                return errorPage("@Questions/Index - Something wrong with the database of Questions.");
+                return _errorService.ErrorPage(this, "questions not found");
             }
 
-        }
-
-
-
-
-
-        //auth helper functions
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-        private RedirectToPageResult authErrorPage()
-        {
-            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
-        }
-        private RedirectToPageResult errorPage(String errorMessage)
-        {
-            return RedirectToPage("../Error", new { errormessage = errorMessage });
         }
     }
 }
