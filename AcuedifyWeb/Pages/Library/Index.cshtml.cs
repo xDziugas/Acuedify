@@ -37,11 +37,11 @@ namespace Acuedify.Pages.Library
         public IEnumerable<Quiz>? Favourites { get; set; }
         public IEnumerable<Quiz>? filteredQuizzes { get; set; }
 
-        public void OnGet()
+        public async Task OnGet()
         {
             if ((userID = getUserId()) == null) { authErrorPage(); }
 
-            Folders = _folderService.GetUserFolders(userID);
+            Folders = await _folderService.FindUserFolders(userID);
             Quizzes = _libraryService.GetUserQuizzes(userID);
             var favourites = new List<Quiz>();
 
@@ -99,7 +99,7 @@ namespace Acuedify.Pages.Library
             return RedirectToPage("Index");
         }
 
-        public IActionResult OnGetToggleFolderChange(int quizId, int? newFolderId)
+        public async Task<IActionResult> OnGetToggleFolderChange(int quizId, int? newFolderId)
         {
             var quiz = _libraryService.GetUserQuiz(quizId);
 
@@ -114,7 +114,7 @@ namespace Acuedify.Pages.Library
 
             if (newFolderId != null)
             {
-                var folder = _folderService.FindFolder(newFolderId.Value);
+                var folder = await _folderService.FindFolder(newFolderId.Value);
                 if (folder == null)
                 {
                     return NotFound();
