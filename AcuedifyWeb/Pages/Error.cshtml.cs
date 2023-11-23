@@ -9,7 +9,8 @@ namespace Acuedify.Pages
     public class ErrorModel : PageModel
     {
         public string? RequestId { get; set; }
-        public string message { get; set; }
+        public string message { get; set; } 
+        public string address { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
@@ -18,11 +19,13 @@ namespace Acuedify.Pages
         public ErrorModel(ILogger<ErrorModel> logger)
         {
             _logger = logger;
-            message = string.Empty;
+            address = "[address]";
+            message = "[error]";
         }
 
-        public void OnGet(String errormessage)
+        public void OnGet(String url, String errormessage)
         {
+            address = url;
             message = errormessage;
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }

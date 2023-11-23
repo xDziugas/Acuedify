@@ -9,6 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Acuedify.Models;
 using Acuedify.Services.Folders;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Auth;
+using Acuedify.Services.Error.Interfaces;
+using Acuedify.Services.Error;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +28,9 @@ builder.Services.AddScoped<IPlayingService, PlayingService>();
 builder.Services.AddScoped<IQuestionsService, QuestionsService>();
 builder.Services.AddScoped<FolderService, FolderService>();
 builder.Services.AddScoped<LibraryUtils, LibraryUtils>();
-
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IErrorService, ErrorService>();
+builder.Services.AddScoped<FolderService, FolderService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
