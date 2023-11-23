@@ -1,11 +1,12 @@
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Library.Interfaces;
 using Acuedify.Services.Playing;
 using Acuedify.Services.Playing.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 
 namespace Acuedify.Pages.Playing
 {
@@ -14,12 +15,16 @@ namespace Acuedify.Pages.Playing
     {
         private readonly ILibraryService _libraryService;
         private readonly IPlayingService _playingService;
-        private string? userID;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public IndexModel(ILibraryService libraryService, IPlayingService playingService)
-        {
-            _libraryService = libraryService;
-            _playingService = playingService;
+        public IndexModel(ILibraryService libraryService, IPlayingService playingService,
+            IAuthService authService, IErrorService errorService)
+		{
+			_libraryService = libraryService;
+			_playingService = playingService;
+            _authService = authService;
+            _errorService = errorService;
         }
 
         public PlayDetails? Details { get; set; }
@@ -27,29 +32,24 @@ namespace Acuedify.Pages.Playing
 
         public IActionResult OnGet(int quizId, int questionId)
         {
-            // Logged in check
-            if ((userID = getUserId()) == null) { authErrorPage(); }
+				var flashcardSet = _libraryService.GetUserQuiz(quizId);
 
-            var flashcardSet = _libraryService.GetUserQuiz(quizId);
+                //flashcardSet authorization check
+                if (!_authService.Authorized(flashcardSet)) { return Forbid(); }
 
-            // Quiz access check
-            if (flashcardSet.UserId != userID)
-            {
-                return errorPage("@Playing - You do not have access to this quiz.");
-            }
 
             var flashcards = _libraryService.GetQuizQuestions(quizId);
 
 
-            if (flashcards == null)
-            {
-                return errorPage("@Playing - Unable to fetch quiz questions.");
-            }
+                if (flashcards == null)
+				{
+                    return _errorService.ErrorPage(this, "questions not found");
+                }
 
-            if (!flashcards.Any())
-            {
-                return RedirectToPage("../Library/Index");
-            }
+				if (!flashcards.Any())
+				{
+					return RedirectToPage("../Library/Index");
+				}
 
             //details unused by view pls remove
             Details = _playingService.InitPlayDetails(
@@ -86,10 +86,10 @@ namespace Acuedify.Pages.Playing
                 details: details
             );
 
-            if (!_playingService.isValid(details))
-            {
-                return Partial("ErrorView", "quiz is null");
-            }
+				if (!_playingService.isValid(details))
+				{
+                   return Partial("ErrorView", "quiz is null");
+                }
 
             return new PartialViewResult
             {
@@ -106,21 +106,6 @@ namespace Acuedify.Pages.Playing
             _libraryService.UpdateProperties(results.quizId);
 
             return new JsonResult(new { success = true });
-        }
-
-
-        //auth helper functions
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-        private RedirectToPageResult authErrorPage()
-        {
-            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
-        }
-        private RedirectToPageResult errorPage(String errorMessage)
-        {
-            return RedirectToPage("../Error", new { errormessage = errorMessage });
         }
     }
 }

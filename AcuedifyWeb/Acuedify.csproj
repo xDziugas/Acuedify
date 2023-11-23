@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Authorization\**" />
+    <Content Remove="Services\Authorization\**" />
+    <EmbeddedResource Remove="Services\Authorization\**" />
+    <None Remove="Services\Authorization\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Controllers\LibraryController.cs" />
     <Compile Remove="Controllers\PlayingController.cs" />
     <Compile Remove="Controllers\QuizzesController.cs" />
