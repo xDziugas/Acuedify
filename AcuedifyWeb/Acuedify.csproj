@@ -8,13 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Authorization\**" />
+    <Content Remove="Services\Authorization\**" />
+    <EmbeddedResource Remove="Services\Authorization\**" />
+    <None Remove="Services\Authorization\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Controllers\LibraryController.cs" />
     <Compile Remove="Controllers\PlayingController.cs" />
     <Compile Remove="Controllers\QuizzesController.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\css\StyleSheet.css" />
     <Content Remove="wwwroot\js\quiz.js" />
   </ItemGroup>
 
@@ -22,7 +28,6 @@
     <None Include="Pages\Shared\_Layout.cshtml" />
     <None Include="Pages\Shared\_LoginPartial.cshtml" />
     <None Include="Pages\Shared\_ValidationScriptsPartial.cshtml" />
-    <None Include="wwwroot\css\StyleSheet.css" />
     <None Include="wwwroot\Icons\Icons.svg" />
     <None Include="wwwroot\js\quiz.js" />
   </ItemGroup>

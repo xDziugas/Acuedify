@@ -1,4 +1,8 @@
 using Acuedify.Models;
+using Acuedify.Services.Auth;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error;
+using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Library;
 using Acuedify.Services.Library.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -14,28 +18,28 @@ namespace Acuedify.Pages.Library
     public class DeleteQuizModel : PageModel
     {
 		private readonly ILibraryService _libraryService;
-        private readonly UserManager<AcuedifyUser> _userManager;
-        private string? userID;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public DeleteQuizModel(ILibraryService libraryService, UserManager<AcuedifyUser> userManager)
+        public DeleteQuizModel(ILibraryService libraryService,
+            IAuthService authService, IErrorService errorService)
 		{
-			this._libraryService = libraryService;
-            this._userManager = userManager;
+			_libraryService = libraryService;
+            _authService = authService;
+            _errorService = errorService;
         }
-		public Quiz Quiz { get; set; }
+		public Quiz? Quiz { get; set; }
 
 		public IActionResult OnGet(int id)
 		{
-            if ((userID = getUserId()) == null) { authErrorPage(); }
-
             Quiz = _libraryService.GetUserQuiz(id);
-			if (Quiz.UserId != userID)
-            {
-                RedirectToPage("../Error", new { errormessage = "@Library/DeleteQuiz - You do not have access to this quiz." });
-            }
-			if (Quiz == null)
+            
+            //authorization check
+            if (!_authService.Authorized(Quiz)) { return Forbid(); }
+
+            if (Quiz == null)
 			{
-                RedirectToPage("../Error", new { errormessage = "@Library/DeleteQuiz - Couldn't fetch quiz." });
+                _errorService.ErrorPage(this, "quiz not found");
             }
 
 			return Page();
@@ -44,30 +48,18 @@ namespace Acuedify.Pages.Library
 		
 		public IActionResult OnPostConfirm(int id)
 		{
-            //not sure if it is possible to delete other users quizzes
-            //does [ValidateAntiForgeryToken] above the DeleteQuizModel protect from that?
+            Quiz quiz = _libraryService.GetUserQuiz(id);
+            //authorization check
+            if (!_authService.Authorized(quiz)) { return Forbid(); }
+
             var result = _libraryService.DeleteUserQuiz(id);
 			if (!result)
 			{
-                RedirectToPage("../Error", new { errormessage = "@Library/DeleteQuiz - Failed to delete quiz from database!" });
-				return Page();
+                _errorService.ErrorPage(this, "couldn't delete quiz");
+                return Page();
 			}
 
 			return RedirectToPage("Index");
 		}
-
-
-
-
-
-        //auth helper functions
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-        private RedirectToPageResult authErrorPage()
-        {
-            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
-        }
     }
 }

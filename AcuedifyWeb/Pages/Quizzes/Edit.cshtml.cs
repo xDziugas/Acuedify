@@ -1,5 +1,7 @@
 using Acuedify.Data;
 using Acuedify.Models;
+using Acuedify.Services.Auth.Interfaces;
+using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Questions.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,38 +15,42 @@ namespace Acuedify.Pages.Quizzes
     public class EditModel : PageModel
     {
         private readonly AppDBContext _context;
-        private string? userID;
+        private readonly IAuthService _authService;
+        private readonly IErrorService _errorService;
 
-        public EditModel(AppDBContext context, IQuestionsService questionsService)
+        public EditModel(AppDBContext context, 
+            IAuthService authService, IErrorService errorService)
         {
             _context = context;
+            _authService = authService;
+            _errorService = errorService;
         }
 
         public Quiz? quiz { get; set; }
 
         public async Task<IActionResult> OnGet(int? quizId)
         {
-            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
+            String? userId = _authService.GetUserId(); 
 
             if (quizId == null)
             {
-                return errorPage("@Quizzes/Edit - not provided with Id.");
+                return _errorService.ErrorPage(this, "not provided by id");
             }
 
             if (_context.Quizzes == null)
             {
-                return errorPage("@Quizzes/Edit - Something went wrong with Quizzes database." );
+                return _errorService.ErrorPage(this, "quizzes not found");
             }
 
             quiz = await _context.Quizzes
-                .Where(quiz => quiz.UserId == userID) // quiz access check
+                .Where(quiz => quiz.UserId == userId) // quiz access check
                 .Where(q => q.Id == quizId)
                 .Include(q => q.Questions)
                 .FirstOrDefaultAsync();
 
             if (quiz == null)
             {
-                return errorPage("@Quizzes/Edit - Quiz not found or you do not have access");
+                return _errorService.ErrorPage(this, "quiz not found");
             }
 
             return Page();
@@ -52,12 +58,11 @@ namespace Acuedify.Pages.Quizzes
 
         public async Task<IActionResult> OnPost(int id, Quiz quiz)
         {   
-            if ((userID = getUserId()) == null) { return authErrorPage(); } // Logged in check
+            String? userId = _authService.GetUserId();
 
-            if(quiz.UserId != userID) 
-            {
-                return errorPage("@Quizzes/Edit - You do not have access to this quiz");
-            }
+            //authorization check
+            if (!_authService.Authorized(quiz)) { return Forbid(); }
+
 
             if (ModelState.IsValid)
             {
@@ -70,14 +75,14 @@ namespace Acuedify.Pages.Quizzes
                 {
                     if (!QuizExists(quiz.Id))
                     {
-                        return errorPage("@Quizzes/Edit - Quiz doesnt exist");
+                        return _errorService.ErrorPage(this, "quiz not found");
                     }
                     else
                     {
-                        return errorPage("@Quizzes/Edit - Failed to update database");
+                        return _errorService.ErrorPage(this, "failed to edit quiz");
                     }
-                } 
-                return RedirectToPage("Edit", new { id = quiz.Id });
+                }
+                return RedirectToPage("Edit", new { quizId = quiz.Id });
             }
             return Page();
         }
@@ -85,25 +90,6 @@ namespace Acuedify.Pages.Quizzes
         private bool QuizExists(int id)
         {
             return (_context.Quizzes?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
-
-
-
-
-
-
-        //auth helper functions
-        private String? getUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-        private RedirectToPageResult authErrorPage()
-        {
-            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
-        }
-        private RedirectToPageResult errorPage(String errorMessage)
-        {
-            return RedirectToPage("../Error", new { errormessage = errorMessage });
         }
     }
 }
