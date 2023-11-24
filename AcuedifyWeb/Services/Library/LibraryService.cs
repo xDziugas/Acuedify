@@ -1,8 +1,10 @@
 ﻿using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Library.Interfaces;
+using Acuedify.Services.Playing.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace Acuedify.Services.Library

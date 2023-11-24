@@ -27,10 +27,10 @@ builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<IPlayingService, PlayingService>();
 builder.Services.AddScoped<IQuestionsService, QuestionsService>();
 builder.Services.AddScoped<FolderService, FolderService>();
+builder.Services.AddScoped<LibraryUtils, LibraryUtils>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IErrorService, ErrorService>();
 builder.Services.AddScoped<FolderService, FolderService>();
-
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
