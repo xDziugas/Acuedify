@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
@@ -25,13 +24,12 @@ namespace Acuedify.Pages.Library
         private readonly IErrorService _errorService;
 
         public IndexModel(ILibraryService libraryService, 
-          FolderService folderService, UserManager<AcuedifyUser> userManager, 
+          FolderService folderService, 
           LibraryUtils libraryUtils, IMemoryCache cache, 
           IAuthService authService, IErrorService errorService)
         {
             _libraryService = libraryService;
             _folderService = folderService;
-            _userManager = userManager;
             _libraryUtils = libraryUtils;
             _cache = cache;
             _authService = authService;
