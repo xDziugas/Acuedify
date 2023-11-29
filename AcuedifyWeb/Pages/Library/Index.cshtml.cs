@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
@@ -24,9 +23,9 @@ namespace Acuedify.Pages.Library
         private readonly IAuthService _authService;
         private readonly IErrorService _errorService;
 
-        public IndexModel(ILibraryService libraryService, 
-          FolderService folderService, 
-          LibraryUtils libraryUtils, IMemoryCache cache, 
+        public IndexModel(ILibraryService libraryService,
+          FolderService folderService,
+          LibraryUtils libraryUtils, IMemoryCache cache,
           IAuthService authService, IErrorService errorService)
         {
             _libraryService = libraryService;
@@ -34,7 +33,7 @@ namespace Acuedify.Pages.Library
             _libraryUtils = libraryUtils;
             _cache = cache;
             _authService = authService;
-            _errorService = errorService;    
+            _errorService = errorService;
         }
 
         public IEnumerable<Folder>? Folders { get; set; }
@@ -133,7 +132,7 @@ namespace Acuedify.Pages.Library
 
             return RedirectToPage("Index");
         }
-        
+
         public IActionResult OnGetSearch(string query)
         {
             _cache.TryGetValue(Constants.LibrarySessionKey, out IEnumerable<Quiz> cachedQuizzes);
