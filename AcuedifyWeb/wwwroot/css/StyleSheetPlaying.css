@@ -78,6 +78,13 @@
     height: 300px;
 }
 
+    .flashcard-container .term,
+    .flashcard-container .definition {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+
 .flashcard {
     background-color: azure;
     width: 500px;

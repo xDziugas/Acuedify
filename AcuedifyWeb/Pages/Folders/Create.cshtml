@@ -5,12 +5,13 @@
     ViewData["Title"] = "Create Folder";
 }
 
-<h1>Create</h1>
+<link rel="stylesheet" href="~/css/FolderForm.css" />
 
-<h4>Folder</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="folder-form-container">
+    <h1>Create</h1>
+    <h4>Folder</h4>
+    <hr />
+    <div class="folder-form">
         <form method="post" asp-page="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -18,17 +19,21 @@
                 <input asp-for="Folder.Name" class="form-control" />
                 <span asp-validation-for="Folder.Name" class="text-danger"></span>
             </div>
-            <div class="form-group mt-2">
+
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
+<div class="back-to-list">
     <a asp-page="/Library/Index">Back to List</a>
 </div>
 
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

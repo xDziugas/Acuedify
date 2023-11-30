@@ -102,23 +102,41 @@ html {
     border-radius: 8px;
 }
 
-    .dropdown-content a {
-        color: black;
-        padding: 10px 16px;
-        text-decoration: none;
-        display: block;
-    }
+..dropdown-content a {
+    color: black;
+    padding: 10px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 5px;
+}
+
+.dropdown-content a:hover, .dropdown-content a:focus {
+    background-color: #d0d0d0; 
+    color: #333; 
+    border-radius: 5px;
+}
+
 
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
+.action:focus,
+.action:active {
+    outline: 1px solid #95a5a6;
+    outline-offset: 1px;
+    box-shadow: none;
+}
+
+.action {
+    border: 1px solid #666666;
+}
 
 
 /*------------------------------folders-----------------------*/
-
 .library-folders .folder-item {
-    background-color: #f7f7f7; 
+    background-color: #f7f7f7;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
@@ -178,15 +196,14 @@ html {
     }
 
 .quiz-item {
-    background-color: #ffffff; /* White background for quizzes */
+    background-color: #ffffff;
     transition: background-color 0.3s ease;
 }
 
     .quiz-item:hover {
-        background-color: #f8f9fa; /* Light gray on hover */
+        background-color: #f8f9fa; 
     }
 
-    /* Style for action buttons */
     .quiz-item td:last-child {
         display: flex;
         justify-content: space-around;

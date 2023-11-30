@@ -1,29 +1,28 @@
 ﻿@page
 @model Acuedify.Pages.Folders.DeleteFolderModel
+
 @{
+    ViewData["Title"] = "Delete Folder";
 }
 
-<form method="post" asp-page="DeleteFolder" asp-page-handler="Confirm" asp-route-folderId="@Model.Folder.Id">
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Delete Folder</h2>
-            <hr />
-        </div>
+<link rel="stylesheet" href="~/css/FolderForm.css" />
+
+<div class="folder-form-container">
+    <h1>Delete Folder</h1>
+    <hr />
+    <form method="post" asp-page="DeleteFolder" asp-page-handler="Confirm" asp-route-folderId="@Model.Folder.Id">
         <div class="mb-3">
             <label asp-for="Folder.Name"></label>
             <input asp-for="Folder.Name" disabled class="form-control" />
         </div>
 
         <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
-        <a asp-page="Index" class="btn btn-secondary" style="width:150px">
-            Back to list
-        </a>
-    </div>
-</form>
+        <a asp-page="../Library/Index" class="btn btn-secondary" style="width:150px">Back to List</a>
+    </form>
+</div>
 
 @section Scripts{
     @{
-        <partial name="_ValidationScriptsPartial" />
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
