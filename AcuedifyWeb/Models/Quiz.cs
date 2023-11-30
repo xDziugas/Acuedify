@@ -30,7 +30,9 @@ namespace Acuedify.Models
         //serialized list, so no new tables are created
         public string? PastScoresSerialized { get; set; }
 
-        [NotMapped]
+        public bool IsPublic { get; set; } = false;
+
+		[NotMapped]
         public List<int> PastScores
         {
             get

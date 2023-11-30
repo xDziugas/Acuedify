@@ -159,6 +159,9 @@ namespace Acuedify.Migrations
                     b.Property<int?>("FolderId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastPlayed")
                         .HasColumnType("datetime2");
 
