@@ -23,9 +23,9 @@ namespace Acuedify.Pages.Library
         private readonly IAuthService _authService;
         private readonly IErrorService _errorService;
 
-        public IndexModel(ILibraryService libraryService,
-          FolderService folderService,
-          LibraryUtils libraryUtils, IMemoryCache cache,
+        public IndexModel(ILibraryService libraryService, 
+          FolderService folderService, 
+          LibraryUtils libraryUtils, IMemoryCache cache, 
           IAuthService authService, IErrorService errorService)
         {
             _libraryService = libraryService;
