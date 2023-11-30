@@ -6,12 +6,14 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<link rel="stylesheet" href="~/css/EditQuiz.css" />
 
-<h4>Quiz</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+
+<div class="edit-quiz-container">
+    <h1>Edit</h1>
+    <h4>Quiz</h4>
+    <hr />
+    <div class="edit-quiz-form">
         <form method="post" asp-page="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="quiz.Id" />
@@ -28,8 +30,9 @@
                 <span asp-validation-for="quiz.Description" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="quiz.isFavorite" /> @Html.DisplayNameFor(model => model.quiz.isFavorite)
+                <label class="favorite-checkbox-label">
+                    <input class="form-check-input favorite-checkbox" asp-for="quiz.isFavorite" />
+                    <span>Favorite</span>
                 </label>
             </div>
             <div class="form-group">
@@ -43,7 +46,7 @@
 <partial name="_Questions" model="@Model" />
 <hr />
 
-<div>
+<div class="back-to-list">
     <a asp-page="../Library/Index">Back to List</a>
 </div>
 

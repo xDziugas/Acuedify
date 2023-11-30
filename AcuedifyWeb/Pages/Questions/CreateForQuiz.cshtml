@@ -5,52 +5,59 @@
     ViewData["Title"] = "Create Question";
 }
 
-<h1>Create a New Question</h1>
-<hr />
+<link rel="stylesheet" href="~/css/CreateQuestion.css" />
 
-<div class="container">
-    <form method="post" class="form-horizontal">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="create-question-container">
+    <h1>Create a New Question</h1>
+    <hr />
+    <div class="create-question-form">
+        <form method="post" class="form-horizontal">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="form-group">
-            <label asp-for="question.Term" class="control-label"></label>
-            <input asp-for="question.Term" class="form-control" />
-            <span asp-validation-for="question.Term" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="question.Definition" class="control-label"></label>
-            <input asp-for="question.Definition" class="form-control" />
-            <span asp-validation-for="question.Definition" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="question.QuizId" class="control-label"></label>
-            <select asp-for="question.QuizId" class="form-control" asp-items="Model.QuizIds"></select>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label">Difficulty</label>
-            <div>
-                @foreach (var difficulty in Enum.GetValues(typeof(Acuedify.Models.Difficulty)))
-                {
-                    <div class="form-check form-check-inline">
-                        <input asp-for="question.Difficulty" class="form-check-input" type="radio" value="@difficulty" />
-                        <label class="form-check-label">@difficulty</label>
-                    </div>
-                }
+            <div class="form-group">
+                <label asp-for="question.Term" class="control-label"></label>
+                <input asp-for="question.Term" class="form-control" />
+                <span asp-validation-for="question.Term" class="text-danger"></span>
             </div>
-            <span asp-validation-for="question.Difficulty" class="text-danger"></span>
-        </div>
 
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" />
-        </div>
-    </form>
+            <div class="form-group">
+                <label asp-for="question.Definition" class="control-label"></label>
+                <input asp-for="question.Definition" class="form-control" />
+                <span asp-validation-for="question.Definition" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="question.QuizId" class="control-label"></label>
+                <select asp-for="question.QuizId" class="form-control" asp-items="Model.QuizIds"></select>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Difficulty</label>
+                <div class="difficulty-buttons">
+                    @foreach (var difficulty in Enum.GetValues(typeof(Acuedify.Models.Difficulty)))
+                    {
+                        if ((int)difficulty != 0) // Skipping the 'not_assigned' difficulty
+                        {
+                            <div class="difficulty-option">
+                                <input asp-for="question.Difficulty" type="radio" value="@difficulty" id="difficulty_@(difficulty.ToString())" />
+                                <label class="difficulty-square" for="difficulty_@(difficulty.ToString())"></label>
+                                <label class="difficulty-label" for="difficulty_@(difficulty.ToString())">@difficulty</label>
+                            </div>
+                        }
+                    }
+                </div>
+                <span asp-validation-for="question.Difficulty" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 </div>
 
-<div>
-    <a asp-page="/Questions/Index">Back to Quizzes</a>
+<div class="back-to-list">
+    <a asp-page="/Questions/Index">Back to quizzes</a>
 </div>
 
 @section Scripts {

@@ -5,90 +5,50 @@
     ViewData["Title"] = "Index";
 }
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="~/css/StyleSheet.css">
+<link rel="stylesheet" type="text/css" href="~/css/StyleSheetLibrary.css">
 
-<body class="w-100 h-100 overflow-y-scroll">
+<header class="header-library">
+        <h1 class="title">Welcome to Your Library</h1>
+        <input type="text" id="searchBar" placeholder="Search..." class="search-bar">
+        <div id="searchResults" class="search-results"></div>
+    </header>
 
-    <h1 class="mb-4 mt-3">Library:</h1>
-    <input type="text" id="searchBar" placeholder="Search..." class="form-control mb-3">
+<div class="container-library" id="regularContent">
 
-    <div id="searchResults" style="display: none;"></div>
+    <nav class="library-nav">
+        <a href="#tests" class="nav-link-library active" data-bs-toggle="tab">Your Tests</a>
+        <a href="#favs" class="nav-link-library" data-bs-toggle="tab">Favourites</a>
+        <div class="dropdown">
+            <button class="dropbtn">Create</button>
+            <div class="dropdown-content">
+                <a asp-page="../Quizzes/Create" class="dropdown-item">
+                    <svg width="16" height="16" viewBox="0 0 16 16">
+                        <use xlink:href="Icons/Icons.svg#icon-quiz"></use>
+                    </svg>
+                    Quiz
+                </a>
+                <a asp-page="../Folders/Create" class="dropdown-item">
+                    <svg width="16" height="16" viewBox="0 0 16 16">
+                        <use xlink:href="Icons/Icons.svg#icon-folder"></use>
+                    </svg>
+                    Folder
+                </a>
+            </div>
+        </div>
+    </nav>
 
-
-    <div id="regularContent" style="display:block">
-
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active" data-bs-toggle="tab" href="#tests" aria-selected="true" role="tab" tabindex="-1">Your Tests</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" data-bs-toggle="tab" href="#favs" aria-selected="false" role="tab">Favourites</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">Create</a>
-                <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 44px);">
-                    <a asp-page="../Quizzes/Create" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <use xlink:href="Icons/Icons.svg#icon-quiz"></use>
-                        </svg>
-                        Quiz
-                    </a>
-                    <a asp-page="../Folders/Create" class="dropdown-item">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <use xlink:href="Icons/Icons.svg#icon-folder"></use>
-                        </svg>
-                        Folder
-                    </a>
-                </div>
-            </li>
-        </ul>
-        <div id="myTabContent" class="tab-content">
-
-            <div class="tab-pane fade active show mb-4 mt-3" id="tests" role="tabpanel">
+    <main id="mainContent">
+        <div class="tab-content">
+            <div class="tab-pane-library active" id="tests" role="tabpanel">
                 <partial name="_TabFolders" , model="Model" />
                 <partial name="_TabQuizzes" , model="Model" />
             </div>
-
-            <div class="tab-pane fade" id="favs" role="tabpanel">
+            <div class="tab-pane-library" id="favs" role="tabpanel">
                 <partial name="_TabFav" , model="Model" />
             </div>
-
         </div>
-    </div>
+    </main>
+</div>
 
 
-    <script>
-        let timeout = null;
-        const searchBar = document.getElementById('searchBar');
-        const searchResultsDiv = document.getElementById('searchResults');
-        const regularContentDiv = document.getElementById('regularContent');
-
-        searchBar.addEventListener('keyup', function (e) {
-            if (e.key === 'Enter') {
-                performSearch();
-            } else {
-                clearTimeout(timeout);
-                timeout = setTimeout(performSearch, 500);
-            }
-        });
-
-        function performSearch() {
-            const searchQuery = searchBar.value;
-            if (searchQuery.trim() === '') {
-                searchResultsDiv.style.display = 'none';
-                regularContentDiv.style.display = 'block';
-                return;
-            }
-
-            fetch(`/Library?handler=Search&query=${encodeURIComponent(searchQuery)}`)
-                .then(response => response.text())
-                .then(html => {
-                    searchResultsDiv.innerHTML = html;
-                    searchResultsDiv.style.display = 'block';
-                    regularContentDiv.style.display = 'none';
-                });
-        }
-    </script>
-
-</body>
+<script src="~/js/Library.js"></script>

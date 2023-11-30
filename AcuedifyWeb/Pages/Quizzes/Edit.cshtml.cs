@@ -2,12 +2,10 @@ using Acuedify.Data;
 using Acuedify.Models;
 using Acuedify.Services.Auth.Interfaces;
 using Acuedify.Services.Error.Interfaces;
-using Acuedify.Services.Questions.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Acuedify.Pages.Quizzes
 {
@@ -68,6 +66,7 @@ namespace Acuedify.Pages.Quizzes
             {
                 try
                 {
+                    //TODO: after editing a quiz, refresh averageScore to 0
                     _context.Update(quiz);
                     await _context.SaveChangesAsync();
                 }

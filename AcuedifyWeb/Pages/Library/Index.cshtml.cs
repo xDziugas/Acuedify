@@ -33,7 +33,7 @@ namespace Acuedify.Pages.Library
             _libraryUtils = libraryUtils;
             _cache = cache;
             _authService = authService;
-            _errorService = errorService;    
+            _errorService = errorService;
         }
 
         public IEnumerable<Folder>? Folders { get; set; }
@@ -132,7 +132,7 @@ namespace Acuedify.Pages.Library
 
             return RedirectToPage("Index");
         }
-        
+
         public IActionResult OnGetSearch(string query)
         {
             _cache.TryGetValue(Constants.LibrarySessionKey, out IEnumerable<Quiz> cachedQuizzes);
