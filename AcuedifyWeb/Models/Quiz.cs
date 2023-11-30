@@ -23,6 +23,8 @@ namespace Acuedify.Models
         public Folder? Folder { get; set; } = null;
         public string? UserId { get; set; } = null;
 
+        public AccessLevel AccessLevel { get; set; } = AccessLevel.PRIVATE;
+
         public int TimesSolved { get; set; } = 0;
 
         public DateTime? LastPlayed { get; set; } = null;
@@ -44,7 +46,11 @@ namespace Acuedify.Models
                 PastScoresSerialized = JsonConvert.SerializeObject(value);
             }
         }
-
-
+    }
+    public enum AccessLevel
+    {
+        PRIVATE,
+        UNLISTED,
+        PUBLIC
     }
 }

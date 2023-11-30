@@ -1,0 +1,45 @@
+@model IndexModel
+
+@{
+
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/StyleSheetLibrary.css" />
+</head>
+<body>
+    <div>
+        <table class="table quizzes-table mt-2">
+            <thead>
+                <tr>
+                    <th width="20%" class="text">Title</th>
+                    <th width="60%" class="text">Description</th>
+                    <th width="20%" class="text">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var quiz in Model.Quizzes)
+                {
+                    if (quiz.FolderId != null) continue;
+                    <tr class="quiz-item">
+                        <td>
+                            <div class="custom-div">
+
+                                <span class="text">@quiz.Title</span>
+                            </div>
+                        </td>
+                        <td class="text">@quiz.Description</td>
+                        <td>
+                            <a asp-page="/Playing/Index" asp-route-quizId="@quiz.Id" asp-route-questionId=0 class="action btn-outline-success btn-sm">
+                                <svg width="16" height="16" viewBox="0 0 16 16">
+                                    <use xlink:href="Icons/Icons.svg#icon-play"></use>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</body>
