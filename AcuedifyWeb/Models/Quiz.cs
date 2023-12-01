@@ -30,7 +30,7 @@ namespace Acuedify.Models
         //serialized list, so no new tables are created
         public string? PastScoresSerialized { get; set; }
 
-        public bool IsPublic { get; set; } = false;
+        public AccessLevel AccessLevel { get; set; } = AccessLevel.PRIVATE;
 
 		[NotMapped]
         public List<int> PastScores
@@ -46,7 +46,13 @@ namespace Acuedify.Models
                 PastScoresSerialized = JsonConvert.SerializeObject(value);
             }
         }
+    }
 
 
+    public enum AccessLevel
+    {
+        PRIVATE,
+        UNLISTED,
+        PUBLIC
     }
 }

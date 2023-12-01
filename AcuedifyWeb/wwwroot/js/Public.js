@@ -1,4 +1,4 @@
-let timeout = null;
+﻿let timeout = null;
 const searchBar = document.getElementById('searchBar');
 const searchResultsDiv = document.getElementById('searchResults');
 const regularContentDiv = document.getElementById('regularContent');
@@ -21,7 +21,7 @@ function performSearch() {
 
     }
 
-    fetch(`/Library?handler=Search&query=${encodeURIComponent(searchQuery)}`)
+    fetch(`/Public?handler=Search&query=${encodeURIComponent(searchQuery)}`)
         .then(response => response.text())
         .then(html => {
             searchResultsDiv.innerHTML = html;
