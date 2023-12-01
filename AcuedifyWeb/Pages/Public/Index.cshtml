@@ -1,0 +1,20 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/StyleSheetLibrary.css">
+
+<header class="header-library">
+    <h1 class="title">Welcome to The Public Quizzes</h1>
+    <input type="text" id="searchBar" placeholder="Search..." class="search-bar">
+    <div id="searchResults" class="search-results"></div>
+</header>
+
+<div class="container-library" id="regularContent">
+    <partial name="_TabQuizzes" , model="Model" />
+</div>
+
+<script src="~/js/Public.js"></script>

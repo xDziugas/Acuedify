@@ -68,6 +68,17 @@ namespace Acuedify.Services.Library
                 .ToList() ?? new List<Quiz>();
         }
 
+        List<Quiz> ILibraryService.GetPublicQuizzes(int amount)
+        {
+            return _dbContext.Quizzes?
+                .Where(s => s.AccessLevel == AccessLevel.PUBLIC)
+                .OrderBy(s => s.TimesSolved)
+                .Take(amount)
+                .ToList() ?? new List<Quiz>();
+        }
+
+
+
         bool ILibraryService.UpdateUserQuiz(Quiz updatedQuiz)
         {
             try

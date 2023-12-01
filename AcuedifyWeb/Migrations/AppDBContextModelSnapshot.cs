@@ -149,6 +149,9 @@ namespace Acuedify.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("int");
+
                     b.Property<string>("AcuedifyUserId")
                         .HasColumnType("nvarchar(450)");
 
