@@ -7,6 +7,14 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.import-lib-container {
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
     .create-question-container h1 {
         text-align: center;
         color: #333;
