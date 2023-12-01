@@ -1,0 +1,38 @@
+﻿@page
+@model Acuedify.Pages.Library.ImportModel
+@{
+}
+@{
+    ViewData["Title"] = "Import library";
+}
+
+<link rel="stylesheet" href="~/css/CreateQuestion.css" />
+
+<div class="import-lib-container">
+    <h1>Import library</h1>
+    <hr />
+    <div class="create-question-form">
+        <form method="post" class="form-horizontal">
+
+            <div class="form-group">
+                <label asp-for="InputString">JSON to import: </label>
+                <textarea asp-for="InputString" class="form-control" rows="20"></textarea>
+                <span asp-validation-for="InputString" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" style="max-width:100px">
+                <input type="submit" value="Import" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="back-to-list">
+    <a asp-page="../Library/Index">Back to library</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
