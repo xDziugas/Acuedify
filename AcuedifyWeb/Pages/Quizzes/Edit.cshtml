@@ -35,22 +35,6 @@
                     <span>Favorite</span>
                 </label>
             </div>
-
-            <div class="form-group">
-                <label class="control-label">Make this quiz:</label>
-                <div class="accesslevel-buttons">
-                    @foreach (var accesslevel in Enum.GetValues(typeof(Acuedify.Models.AccessLevel)))
-                    {
-                        <div class="accesslevel-option">
-                            <input asp-for="quiz.AccessLevel" type="radio" value="@accesslevel" id="accesslevel_@(accesslevel.ToString())" />
-                            <label class="accesslevel-square" for="accesslevel_@(accesslevel.ToString())"></label>
-                            <label class="accesslevel-label" for="accesslevel_@(accesslevel.ToString())">@accesslevel</label>
-                        </div>
-                    }
-                </div>
-                <span asp-validation-for="quiz.AccessLevel" class="text-danger"></span>
-            </div>
-
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

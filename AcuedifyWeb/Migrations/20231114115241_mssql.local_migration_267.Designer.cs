@@ -4,6 +4,7 @@ using Acuedify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acuedify.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231114115241_mssql.local_migration_267")]
+    partial class mssqllocal_migration_267
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,6 +154,9 @@ namespace Acuedify.Migrations
 
                     b.Property<string>("AcuedifyUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("Ao3Score")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()

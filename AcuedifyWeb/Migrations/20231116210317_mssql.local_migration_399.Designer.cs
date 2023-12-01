@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acuedify.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231130231845_AccessLevelEnum")]
-    partial class AccessLevelEnum
+    [Migration("20231116210317_mssql.local_migration_399")]
+    partial class mssqllocal_migration_399
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -151,9 +151,6 @@ namespace Acuedify.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccessLevel")
-                        .HasColumnType("int");
 
                     b.Property<string>("AcuedifyUserId")
                         .HasColumnType("nvarchar(450)");

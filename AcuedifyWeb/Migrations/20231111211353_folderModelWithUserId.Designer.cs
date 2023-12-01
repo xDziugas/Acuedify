@@ -4,6 +4,7 @@ using Acuedify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acuedify.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231111211353_folderModelWithUserId")]
+    partial class folderModelWithUserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,9 +122,6 @@ namespace Acuedify.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Difficulty")
-                        .HasColumnType("int");
-
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
 
@@ -157,15 +157,6 @@ namespace Acuedify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("FolderId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastPlayed")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PastScoresSerialized")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TimesSolved")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")

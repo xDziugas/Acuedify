@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Acuedify.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20231130221642_QuizAccessLevel")]
-    partial class QuizAccessLevel
+    [Migration("20231111190328_userModelReplacement")]
+    partial class userModelReplacement
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,9 +102,6 @@ namespace Acuedify.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Folders");
@@ -121,9 +118,6 @@ namespace Acuedify.Migrations
                     b.Property<string>("Definition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Difficulty")
-                        .HasColumnType("int");
 
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
@@ -152,9 +146,6 @@ namespace Acuedify.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<short>("AccessLevel")
-                        .HasColumnType("smallint");
-
                     b.Property<string>("AcuedifyUserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -163,15 +154,6 @@ namespace Acuedify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("FolderId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastPlayed")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PastScoresSerialized")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TimesSolved")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
