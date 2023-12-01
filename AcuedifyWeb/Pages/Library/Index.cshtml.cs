@@ -146,5 +146,13 @@ namespace Acuedify.Pages.Library
             };
         }
 
+        private String? getUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+        private RedirectToPageResult authErrorPage()
+        {
+            return RedirectToPage("../Error", new { errormessage = "You are not logged in (userId = null)" });
+        }
     }
 }

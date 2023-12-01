@@ -103,43 +103,6 @@
         background-color: #e7f3ff;
     }
 
-.accesslevel-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.accesslevel-option {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-}
-
-.accesslevel-square {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
-    border: 1px solid #007bff;
-    border-radius: 4px;
-    background-color: #f8f9fa;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.accesslevel-label {
-    cursor: pointer;
-    user-select: none;
-}
-
-.accesslevel-option input[type="radio"]:checked + .accesslevel-square {
-    background-color: #007bff;
-}
-
-.accesslevel-option input[type="radio"] {
-    display: none;
-}
-
 body, p, label, span, div, h1, h4 {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -167,5 +130,3 @@ input, textarea {
 body {
     animation: backgroundFade 10s infinite alternate;
 }
-
-

@@ -18,7 +18,6 @@ function performSearch() {
         searchResultsDiv.style.display = 'none';
         regularContentDiv.style.display = 'block';
         return;
-
     }
 
     fetch(`/Library?handler=Search&query=${encodeURIComponent(searchQuery)}`)
