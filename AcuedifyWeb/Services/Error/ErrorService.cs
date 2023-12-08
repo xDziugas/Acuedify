@@ -21,7 +21,7 @@ namespace Acuedify.Services.Error
                 .ToString();
 
 
-            return pageModel.RedirectToPage("/Error", 
+            return pageModel.RedirectToPage("/Error",
                 new { url = address, errormessage = errorMessage });
         }
     }

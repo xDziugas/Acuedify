@@ -31,6 +31,7 @@ builder.Services.AddScoped<LibraryUtils, LibraryUtils>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IErrorService, ErrorService>();
 builder.Services.AddScoped<FolderService, FolderService>();
+builder.Services.AddScoped<ImportService, ImportService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
