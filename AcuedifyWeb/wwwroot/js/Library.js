@@ -55,8 +55,6 @@ function saveScrollPosition() {
 
 window.addEventListener('beforeunload', saveScrollPosition);
 
-
-
 // Retrieve the stored scroll position from local storage
 function retrieveScrollPosition() {
     return parseInt(localStorage.getItem('scrollPosition')) || 0;
@@ -64,3 +62,54 @@ function retrieveScrollPosition() {
 
 const storedScrollPosition = retrieveScrollPosition();
 window.scrollTo(0, storedScrollPosition);
+
+//------------------------------------------------------------
+
+document.addEventListener('DOMContentLoaded', function () {
+    addFavoriteToggleListeners();
+});
+
+function addFavoriteToggleListeners() {
+    document.querySelectorAll('.toggle-favorite').forEach(item => {
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
+            var quizId = parseInt(this.getAttribute('data-id'));
+            var isFavorite = this.getAttribute('data-isfavorite') === 'True';
+
+            // Toggle favorite status
+            isFavorite = !isFavorite;
+            this.setAttribute('data-isfavorite', isFavorite ? 'True' : 'False');
+
+            // Update icon class
+            updateHeartIcon(this, isFavorite);
+
+            // Refresh content
+            refreshTabContent(quizId);
+        });
+    });
+}
+
+function updateHeartIcon(element, isFavorite) {
+    const icon = element.querySelector('svg');
+    if (icon) {
+        if (isFavorite) {
+            icon.classList.add('favorite-heart');
+            icon.classList.remove('not-favorite-heart');
+        } else {
+            icon.classList.remove('favorite-heart');
+            icon.classList.add('not-favorite-heart');
+        }
+    }
+}
+
+function refreshTabContent(quizId) {
+    ['tests', 'favs'].forEach(tabId => {
+        fetch(`/Library?handler=ReloadTabContent&tab=${tabId}&id=${quizId}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById(tabId).innerHTML = html;
+                addFavoriteToggleListeners();
+            })
+            .catch(error => console.error('Error reloading tab content:', error));
+    });
+}

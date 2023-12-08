@@ -2,6 +2,7 @@
 {
     public class Constants
     {
-        public const string LibrarySessionKey = "Library";
+        public const string LibraryQuizzesSessionKey = "LibraryQuizzes";
+        public const string LibraryFoldersSessionKey = "LibraryFolders";
     }
 }
