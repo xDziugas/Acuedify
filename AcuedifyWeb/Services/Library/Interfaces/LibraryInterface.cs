@@ -15,6 +15,7 @@ namespace Acuedify.Services.Library.Interfaces
         bool UpdateQuizResult(QuizResultsModel result);
         bool UpdateProperties(int quizId);
         IEnumerable<Quiz>? SortByLastPlayed(IEnumerable<Quiz>? quizzes);
+        List<Quiz> GetPublicQuizzes(int amount);
     }
 }
 
