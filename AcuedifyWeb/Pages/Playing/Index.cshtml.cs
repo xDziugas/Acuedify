@@ -62,7 +62,7 @@ namespace Acuedify.Pages.Playing
                 Details.Quiz.Questions = _playingService.ShuffleByDifficulty(Details.Quiz.Questions);
             }
 
-            _playingService.SetToSession(
+            _playingService.SetToSession<PlayDetails>(
                 SessionKey: Constants.PlayingSessionKey,
                 session: HttpContext.Session,
                 details: Details
@@ -73,14 +73,14 @@ namespace Acuedify.Pages.Playing
 
         public IActionResult OnGetNextFlashCardPartial(int quizId, int questionId)
         {
-            var details = _playingService.GetFromSession(
+            var details = _playingService.GetFromSession<PlayDetails>(
                 SessionKey: Constants.PlayingSessionKey,
                 session: HttpContext.Session
             );
 
             details.CurrentIndex = questionId;
 
-            _playingService.SetToSession(
+            _playingService.SetToSession<PlayDetails>(
                 SessionKey: Constants.PlayingSessionKey,
                 session: HttpContext.Session,
                 details: details

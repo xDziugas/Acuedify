@@ -27,6 +27,31 @@
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@(Model.Details.CurrentIndex + 1)" aria-valuemin="0" aria-valuemax="@(Model.Details.Quiz.Questions.Count)" style="width: @(((double)(Model.Details.CurrentIndex + 1) / Model.Details.Quiz.Questions.Count) * 100)%;"></div>
         </div>
 
+        <div class="mode-selection dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="modeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Mode
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="modeDropdown">
+                <li>
+                    <a class="dropdown-item" asp-page="/Playing/Index" asp-route-quizId="@Model.Details.Quiz.Id" asp-route-questionId="0">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <use xlink:href="Icons/Icons.svg#icon-play"></use>
+                        </svg>
+                        Standard Mode
+
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-page="/Playing/InfiniteMode" asp-route-quizId="@Model.Details.Quiz.Id">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <use xlink:href="Icons/Icons.svg#icon-play"></use>
+                        </svg>
+                        Infinite Mode
+                    </a>
+                </li>
+            </ul>
+        </div>
+
         <div class="header-container">
             <div class="timer">
                 <span id="timer">00:00</span>
@@ -83,10 +108,21 @@
         }
     </script>
     <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            selectMode('standard'); // Set the default mode when the page loads
+
+        });
+
+
+       
+
+
         let correctCount = 0;
         let incorrectCount = 0;
 
         document.addEventListener('DOMContentLoaded', () => {
+
             const correctCheckbox = document.getElementById('correct-checkbox');
             const incorrectCheckbox = document.getElementById('incorrect-checkbox');
 
