@@ -7,7 +7,6 @@ using Acuedify.Services.Playing.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using NuGet.Protocol.Core.Types;
 
 namespace Acuedify.Pages.Playing
 {
@@ -51,7 +50,6 @@ namespace Acuedify.Pages.Playing
                 return RedirectToPage("../Library/Index");
             }
 
-            //details unused by view pls remove
             Statistics = _playingService.InitQuizStatistics(
                 flashcards: flashcards,
                 flashcardSet: flashcardSet
@@ -71,6 +69,7 @@ namespace Acuedify.Pages.Playing
             return Page();
         }
 
+        //todo: delete questionId
         public IActionResult OnGetNextFlashCardPartial(int quizId, int questionId)
         {
             var statistics = _playingService.GetFromSession<QuizStatistics>(
@@ -102,6 +101,7 @@ namespace Acuedify.Pages.Playing
             };
         }
 
+        //Updates statistics before getting next flashcard
         public JsonResult OnPostSubmitQuizResults([FromBody] int questionId, [FromBody] bool isCorrect)
         {
             var statistics = _playingService.GetFromSession<QuizStatistics>(
@@ -114,6 +114,7 @@ namespace Acuedify.Pages.Playing
         }
 
         //todo: rename to index
+        //gets next flashcard based on weight
         private int DetermineNextQuestionId(QuizStatistics statistics)
         {
             Random random = new Random();

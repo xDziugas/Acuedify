@@ -59,27 +59,15 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
 });
 
-
-//builder.Services.AddHttpsRedirection(options =>
-//{
-//    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-//    options.HttpsPort = 7073; // Set the HTTPS port if known; otherwise, it's inferred from the server configuration
-//});
-
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
-    options.CheckConsentNeeded = context => true; // Consent required
+    options.CheckConsentNeeded = context => true; 
     options.MinimumSameSitePolicy = SameSiteMode.None;
-    options.Secure = CookieSecurePolicy.Always; // Ensure cookies are always secure
+    options.Secure = CookieSecurePolicy.Always;
 });
-
-
-
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -89,12 +77,8 @@ if (!app.Environment.IsDevelopment())
 else
 {
     app.UseDeveloperExceptionPage();
-    app.UseHttpsRedirection(); // Make sure this line is present
+    app.UseHttpsRedirection();
 }
-
-
-
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

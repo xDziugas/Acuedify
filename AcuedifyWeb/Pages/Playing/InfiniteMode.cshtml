@@ -14,7 +14,6 @@
     var requestVerificationToken = '@token';
 </script>
 
-
 <head>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap-grid.css">
@@ -27,6 +26,8 @@
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@(Model.Statistics.CurrentIndex + 1)" aria-valuemin="0" aria-valuemax="@(Model.Statistics.Quiz.Questions.Count)" style="width: 100%;"></div>
         </div>
 
+        <!--todo: fix icons:-->
+        
         <div class="mode-selection dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="modeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 Mode
@@ -84,7 +85,6 @@
                 <input type="hidden" id="selected-answer" value="">
             </div>
 
-
             <div class="btn-next">
                 <a href="#" class="btn btn-outline-primary btn-sm custom-button" id="backToLibrary" data-quiz-id="@Model.Statistics.Quiz.Id" data-question-index="@Model.Statistics.CurrentIndex">
                     <svg width="16" height="16" viewBox="0 0 16 16">
@@ -101,7 +101,6 @@
             card.classList.toggle("flipped");
         }
     </script>
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -132,7 +131,6 @@
         }
 
         function getCurrentQuestionId() {
-            // Assuming question index is the current index
             return parseInt(document.getElementById('backToLibrary').getAttribute('data-question-index'));
         }
 
@@ -165,6 +163,7 @@
             }
         }
 
+        //todo: fix routing etc
         async function sendStatistics(questionId, isCorrect) {
             try {
                 const response = await fetch('/InfiniteMode/15?handler=SubmitQuizResults', {
@@ -188,17 +187,8 @@
                 throw error;
             }
         }
-
-        // Add any additional functions or event listeners you need
-
-
-        // Keep the rest of your existing JavaScript code as it is
-
         document.getElementById('backToLibrary').addEventListener('click', function () {
             window.location.href = '/Library'; // Redirect to Library
         });
-
-        
-
     </script>
 </body>

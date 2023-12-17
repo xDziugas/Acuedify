@@ -20,36 +20,35 @@ namespace Acuedify.Pages.Playing
 
         public IndexModel(ILibraryService libraryService, IPlayingService playingService,
             IAuthService authService, IErrorService errorService)
-		{
-			_libraryService = libraryService;
-			_playingService = playingService;
+        {
+            _libraryService = libraryService;
+            _playingService = playingService;
             _authService = authService;
             _errorService = errorService;
         }
 
         public PlayDetails? Details { get; set; }
 
-
         public IActionResult OnGet(int quizId, int questionId)
         {
-				var flashcardSet = _libraryService.GetUserQuiz(quizId);
+            var flashcardSet = _libraryService.GetUserQuiz(quizId);
 
-                //flashcardSet authorization check
-                if (!_authService.Authorized(flashcardSet)) { return Forbid(); }
+            //flashcardSet authorization check
+            if (!_authService.Authorized(flashcardSet)) { return Forbid(); }
 
 
             var flashcards = _libraryService.GetQuizQuestions(quizId);
 
 
-                if (flashcards == null)
-				{
-                    return _errorService.ErrorPage(this, "questions not found");
-                }
+            if (flashcards == null)
+            {
+                return _errorService.ErrorPage(this, "questions not found");
+            }
 
-				if (!flashcards.Any())
-				{
-					return RedirectToPage("../Library/Index");
-				}
+            if (!flashcards.Any())
+            {
+                return RedirectToPage("../Library/Index");
+            }
 
             //details unused by view pls remove
             Details = _playingService.InitPlayDetails(
@@ -86,10 +85,10 @@ namespace Acuedify.Pages.Playing
                 details: details
             );
 
-				if (!_playingService.isValid(details))
-				{
-                   return Partial("ErrorView", "quiz is null");
-                }
+            if (!_playingService.isValid(details))
+            {
+                return Partial("ErrorView", "quiz is null");
+            }
 
             return new PartialViewResult
             {
@@ -97,7 +96,6 @@ namespace Acuedify.Pages.Playing
                 ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<Question>(ViewData, details?.Quiz?.Questions[details.CurrentIndex])
             };
         }
-
         public JsonResult OnPostSubmitQuizResults([FromBody] QuizResultsModel results)
         {
             _libraryService.UpdateQuizResult(results);
