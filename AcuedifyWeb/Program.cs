@@ -13,6 +13,7 @@ using Acuedify.Services.Auth.Interfaces;
 using Acuedify.Services.Auth;
 using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Error;
+using Acuedify.Models.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +80,8 @@ else
     app.UseDeveloperExceptionPage();
     app.UseHttpsRedirection();
 }
+
+app.UseMiddleware<LoggingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

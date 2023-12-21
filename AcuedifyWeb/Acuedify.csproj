@@ -49,7 +49,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\" />
-    <Folder Include="Models\Middleware\" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
   </ItemGroup>
 
