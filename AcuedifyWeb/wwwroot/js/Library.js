@@ -66,25 +66,24 @@ window.scrollTo(0, storedScrollPosition);
 //------------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', function () {
-    addFavoriteToggleListeners();
+    addFavoriteToggleListeners(document.querySelector('#tests'));
+    addFavoriteToggleListeners(document.querySelector('#favs'));
 });
 
-function addFavoriteToggleListeners() {
-    document.querySelectorAll('.toggle-favorite').forEach(item => {
-        item.addEventListener('click', function (e) {
+function addFavoriteToggleListeners(rootElement) {
+    rootElement.querySelectorAll('.toggle-favorite').forEach(item => {
+        item.addEventListener('click', async function (e) {
             e.preventDefault();
             var quizId = parseInt(this.getAttribute('data-id'));
-            var isFavorite = this.getAttribute('data-isfavorite') === 'True';
+            var isFavorite = this.getAttribute('data-isfavorite') == "True";
+            var newStatus = !isFavorite;
 
-            // Toggle favorite status
-            isFavorite = !isFavorite;
-            this.setAttribute('data-isfavorite', isFavorite ? 'True' : 'False');
+            await refreshTabContent(quizId, newStatus);
 
-            // Update icon class
-            updateHeartIcon(this, isFavorite);
+            this.setAttribute('data-isfavorite', newStatus ? 'True' : 'False');
 
-            // Refresh content
-            refreshTabContent(quizId);
+            updateHeartIcon(this, newStatus);
+
         });
     });
 }
@@ -96,20 +95,33 @@ function updateHeartIcon(element, isFavorite) {
             icon.classList.add('favorite-heart');
             icon.classList.remove('not-favorite-heart');
         } else {
-            icon.classList.remove('favorite-heart');
             icon.classList.add('not-favorite-heart');
+            icon.classList.remove('favorite-heart');
         }
     }
 }
 
-function refreshTabContent(quizId) {
-    ['tests', 'favs'].forEach(tabId => {
-        fetch(`/Library?handler=ReloadTabContent&tab=${tabId}&id=${quizId}`)
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById(tabId).innerHTML = html;
-                addFavoriteToggleListeners();
-            })
-            .catch(error => console.error('Error reloading tab content:', error));
-    });
+async function refreshTabContent(quizId, newStatus) {
+    // Refresh 'tests' tab
+    let response = await fetch(`/Library?handler=ReloadTabContent&tab=tests&id=${quizId}&newStatus=${newStatus}`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    let html = await response.text();
+    let testsTab = document.getElementById('tests');
+    testsTab.innerHTML = html;
+    addFavoriteToggleListeners(testsTab); // Rebind event listeners to 'tests' tab content
+
+    // Refresh 'favs' tab
+    response = await fetch(`/Library?handler=ReloadTabContent&tab=favs&id=${quizId}&newStatus=${newStatus}`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    html = await response.text();
+    let favsTab = document.getElementById('favs');
+    favsTab.innerHTML = html;
+    addFavoriteToggleListeners(favsTab); // Rebind event listeners to 'favs' tab content
 }
+
+
+

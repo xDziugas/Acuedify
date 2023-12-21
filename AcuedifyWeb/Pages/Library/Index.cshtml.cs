@@ -78,7 +78,7 @@ namespace Acuedify.Pages.Library
             _cache.Set(Constants.LibraryFoldersSessionKey, Folders, cacheEntryOptions);
         }
 
-        public PartialViewResult OnGetReloadTabContent(string tab, int id)
+        public PartialViewResult OnGetReloadTabContent(string tab, int id, bool newStatus)
         {
             // Retrieve quizzes from cache and update the favorite status of the targeted quiz
             _cache.TryGetValue(Constants.LibraryQuizzesSessionKey, out IEnumerable<Quiz> cachedQuizzes);
@@ -87,7 +87,7 @@ namespace Acuedify.Pages.Library
             var quizToUpdate = Quizzes.FirstOrDefault(q => q.Id == id);
             if (quizToUpdate != null && _authService.Authorized(quizToUpdate))
             {
-                quizToUpdate.isFavorite = !quizToUpdate.isFavorite;
+                quizToUpdate.isFavorite = newStatus;
                 _libraryService.UpdateUserQuiz(quizToUpdate);
 
                 // Update cache with the modified list

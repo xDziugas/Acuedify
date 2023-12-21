@@ -79,7 +79,8 @@ namespace Acuedify.Pages.Playing
 
             statistics.TotalSolved = questionId;
 
-            int nextQuestionId = DetermineNextQuestionId(statistics);
+            int lastQuestionId = statistics.CurrentIndex;
+            int nextQuestionId = DetermineNextQuestionId(statistics, lastQuestionId);
 
             statistics.CurrentIndex = nextQuestionId;
 
@@ -115,24 +116,33 @@ namespace Acuedify.Pages.Playing
 
         //todo: rename to index
         //gets next flashcard based on weight
-        private int DetermineNextQuestionId(QuizStatistics statistics)
+        private int DetermineNextQuestionId(QuizStatistics statistics, int lastQuestionId)
         {
             Random random = new Random();
             double totalWeight = statistics.Weight.Sum();
             double choice = random.NextDouble() * totalWeight;
 
             double sum = 0;
-            for(int i = 0; i < statistics.Questions.Count; i++)
+            int idx = 0;
+            for (int i = 0; i < statistics.Questions.Count; i++)
             {
                 sum += statistics.Weight[i];
                 if (sum >= choice)
                 {
-                    return i;
+                    idx = i;
+                    break;
                 }
             }
 
-            //Error: Default
-            return 0;
+            // If the chosen index is the same as the last one and there's more than one question,
+            // adjust to the next question (or loop back to the first one)
+            if (lastQuestionId == idx && statistics.Questions.Count > 1)
+            {
+                idx = (idx + 1) % statistics.Questions.Count;
+            }
+
+            return idx;
         }
+
     }
 }

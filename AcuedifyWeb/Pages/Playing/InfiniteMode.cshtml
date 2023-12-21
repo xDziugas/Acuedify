@@ -125,9 +125,17 @@
         }
 
         async function handleAnswer(isCorrect) {
+            localStorage.setItem('scrollPosition', window.scrollY);
+
             let questionId = getCurrentQuestionId();
             await sendStatistics(questionId, isCorrect);
             loadNextFlashcard();
+            restoreScrollPosition();
+        }
+
+        function restoreScrollPosition() {
+            const savedPosition = localStorage.getItem('scrollPosition') || 0;
+            window.scrollTo(0, parseInt(savedPosition));
         }
 
         function getCurrentQuestionId() {
