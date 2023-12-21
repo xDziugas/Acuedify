@@ -27,9 +27,9 @@ namespace Acuedify.Services.Auth
 /*
             System.Diagnostics.Trace.WriteLine("user id: " + userId);
             System.Diagnostics.Trace.WriteLine("quiz user id: " + quiz.UserId);
-*/
-            if (userId == null || quiz.UserId != userId) { return false; }
-            else { return true; }
+*/          
+            if ((userId != null && quiz.UserId == userId) || quiz.AccessLevel > AccessLevel.PRIVATE) { return true; }
+            else { return false; }
         }
 
         bool IAuthService.Authorized(Question question)
