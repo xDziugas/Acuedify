@@ -23,9 +23,9 @@ namespace Acuedify.Pages.Library
         private readonly IAuthService _authService;
         private readonly IErrorService _errorService;
 
-        public IndexModel(ILibraryService libraryService, 
-          FolderService folderService, 
-          LibraryUtils libraryUtils, IMemoryCache cache, 
+        public IndexModel(ILibraryService libraryService,
+          FolderService folderService,
+          LibraryUtils libraryUtils, IMemoryCache cache,
           IAuthService authService, IErrorService errorService)
         {
             _libraryService = libraryService;
@@ -68,39 +68,59 @@ namespace Acuedify.Pages.Library
             //Sort quizzes in library by last played (doesn't sort quizzes in favorites tab)
             Quizzes = _libraryService.SortByLastPlayed(Quizzes);
 
-            if (!_cache.TryGetValue(Constants.LibrarySessionKey, out IEnumerable<Quiz> quizzes))
-            {
-                //keep in cache for 5 minutes if not accessed
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(5));
 
-                // Save the data in cache
-                _cache.Set(Constants.LibrarySessionKey, Quizzes, cacheEntryOptions);
-            }
+            //keep in cache for 5 minutes if not accessed
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(20));
+
+            // Save the data in cache
+            _cache.Set(Constants.LibraryQuizzesSessionKey, Quizzes, cacheEntryOptions);
+            _cache.Set(Constants.LibraryFoldersSessionKey, Folders, cacheEntryOptions);
         }
 
-
-        public IActionResult OnGetToggleFavorite(int id)
+        public PartialViewResult OnGetReloadTabContent(string tab, int id, bool newStatus)
         {
-            var quiz = _libraryService.GetUserQuiz(id);
+            // Retrieve quizzes from cache and update the favorite status of the targeted quiz
+            _cache.TryGetValue(Constants.LibraryQuizzesSessionKey, out IEnumerable<Quiz> cachedQuizzes);
+            Quizzes = cachedQuizzes.ToList();
 
-            //authorization check
-            if (!_authService.Authorized(quiz)) { return Forbid(); }
-
-
-            if (quiz == null)
+            var quizToUpdate = Quizzes.FirstOrDefault(q => q.Id == id);
+            if (quizToUpdate != null && _authService.Authorized(quizToUpdate))
             {
-                return _errorService.ErrorPage(this, "quiz not found");
+                quizToUpdate.isFavorite = newStatus;
+                _libraryService.UpdateUserQuiz(quizToUpdate);
+
+                // Update cache with the modified list
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(20));
+                _cache.Set(Constants.LibraryQuizzesSessionKey, Quizzes, cacheEntryOptions);
             }
 
-            else
+            // Get folders from cache :: only in tests mb? move??
+            _cache.TryGetValue(Constants.LibraryFoldersSessionKey, out IEnumerable<Folder> cachedFolders);
+            Folders = cachedFolders;
+
+            // Return the partial view based on the tab
+            if (tab == "tests")
             {
-                quiz.isFavorite = !quiz.isFavorite;
-                _libraryService.UpdateUserQuiz(quiz);
+                return new PartialViewResult
+                {
+                    ViewName = "_CombinedTabContent",
+                    ViewData = new ViewDataDictionary<IndexModel>(ViewData, this)
+                };
+            }
+            else if (tab == "favs")
+            {
+                var favourites = Quizzes.Where(q => q.isFavorite).ToList();
+                Favourites = favourites;
+
+                return new PartialViewResult
+                {
+                    ViewName = "_TabFav",
+                    ViewData = new ViewDataDictionary<IndexModel>(ViewData, this)
+                };
             }
 
-
-            return RedirectToPage("Index");
+            return Partial("_EmptyPartial");
         }
 
         public async Task<IActionResult> OnGetToggleFolderChange(int quizId, int? newFolderId)
@@ -135,7 +155,7 @@ namespace Acuedify.Pages.Library
 
         public IActionResult OnGetSearch(string query)
         {
-            _cache.TryGetValue(Constants.LibrarySessionKey, out IEnumerable<Quiz> cachedQuizzes);
+            _cache.TryGetValue(Constants.LibraryQuizzesSessionKey, out IEnumerable<Quiz> cachedQuizzes);
 
             filteredQuizzes = _libraryUtils.FilterQuizzes(query, cachedQuizzes ?? Enumerable.Empty<Quiz>());
 

@@ -1,0 +1,202 @@
+﻿@page "/InfiniteMode/{QuizId:int}"
+@model Acuedify.Pages.Playing.InfiniteModeModel
+
+@{
+    ViewData["Title"] = "InfiniteMode";
+}
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var token = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
+
+<script>
+    var requestVerificationToken = '@token';
+</script>
+
+<head>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap-grid.css">
+    <link rel="stylesheet" type="text/css" href="~/css/StyleSheetPlaying.css">
+</head>
+<body>
+    <div class="quiz-container">
+
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@(Model.Statistics.CurrentIndex + 1)" aria-valuemin="0" aria-valuemax="@(Model.Statistics.Quiz.Questions.Count)" style="width: 100%;"></div>
+        </div>
+
+        <!--todo: fix icons:-->
+        
+        <div class="mode-selection dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="modeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Mode
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="modeDropdown">
+                <li>
+                    <a class="dropdown-item" asp-page="/Playing/Index" asp-route-quizId="@Model.Statistics.Quiz.Id" asp-route-questionId="0">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <use xlink:href="Icons/Icons.svg#icon-play"></use>
+                        </svg>
+                        Standard Mode
+
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-page="/Playing/InfiniteMode" asp-route-quizId="@Model.Statistics.Quiz.Id">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <use xlink:href="Icons/Icons.svg#icon-play"></use>
+                        </svg>
+                        Infinite Mode
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="header-container">
+            <div class="timer">
+                <span id="timer">00:00</span>
+            </div>
+            <div class="quiz-info">
+                <div class="title">
+                    Title: @Model.Statistics.Quiz.Title
+                </div>
+                <div class="description">
+                    Description: @Model.Statistics.Quiz.Description
+                </div>
+            </div>
+            <div class="card-count">
+                @(Model.Statistics.TotalSolved)
+            </div>
+        </div>
+
+        <div class="flashcard-container" id="flashcard-container">
+            <partial name="_FlashcardContent" , model="Model.Statistics.Quiz.Questions[Model.Statistics.CurrentIndex]" />
+        </div>
+
+        <div class="review">
+            <div class="review-btns">
+                <input type="checkbox" id="correct-checkbox" class="btn-check" autocomplete="off" hidden>
+                <label class="btn btn-outline-success btn-sm" for="correct-checkbox">Correct</label>
+
+                <input type="checkbox" id="incorrect-checkbox" class="btn-check" autocomplete="off" hidden>
+                <label class="btn btn-outline-danger btn-sm" for="incorrect-checkbox">Incorrect</label>
+
+                <input type="hidden" id="selected-answer" value="">
+            </div>
+
+            <div class="btn-next">
+                <a href="#" class="btn btn-outline-primary btn-sm custom-button" id="backToLibrary" data-quiz-id="@Model.Statistics.Quiz.Id" data-question-index="@Model.Statistics.CurrentIndex">
+                    <svg width="16" height="16" viewBox="0 0 16 16">
+                        <use xlink:href="Icons/Icons.svg#icon-next"></use>
+                    </svg>
+                    Back to Library
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        function rotateCard(card) {
+            card.classList.toggle("flipped");
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setupAnswerHandlers();
+        });
+
+        function setupAnswerHandlers() {
+            const correctCheckbox = document.getElementById('correct-checkbox');
+            const incorrectCheckbox = document.getElementById('incorrect-checkbox');
+
+            correctCheckbox.addEventListener('change', async () => {
+                if (correctCheckbox.checked) {
+                    await handleAnswer(true);
+                }
+            });
+
+            incorrectCheckbox.addEventListener('change', async () => {
+                if (incorrectCheckbox.checked) {
+                    await handleAnswer(false);
+                }
+            });
+        }
+
+        async function handleAnswer(isCorrect) {
+            localStorage.setItem('scrollPosition', window.scrollY);
+
+            let questionId = getCurrentQuestionId();
+            await sendStatistics(questionId, isCorrect);
+            loadNextFlashcard();
+            restoreScrollPosition();
+        }
+
+        function restoreScrollPosition() {
+            const savedPosition = localStorage.getItem('scrollPosition') || 0;
+            window.scrollTo(0, parseInt(savedPosition));
+        }
+
+        function getCurrentQuestionId() {
+            return parseInt(document.getElementById('backToLibrary').getAttribute('data-question-index'));
+        }
+
+        async function loadNextFlashcard() {
+            var quizId = document.getElementById('backToLibrary').getAttribute('data-quiz-id');
+            var currentQuestionIndex = parseInt(document.getElementById('backToLibrary').getAttribute('data-question-index'), 10);
+
+            // Increment question index for next question
+            var nextQuestionIndex = currentQuestionIndex + 1;
+            await fetchNextFlashcard(quizId, nextQuestionIndex);
+        }
+
+        async function fetchNextFlashcard(quizId, questionIndex) {
+            try {
+                const response = await fetch(`/InfiniteMode/15?handler=NextFlashCardPartial&quizId=${quizId}&questionId=${questionIndex}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const html = await response.text();
+                document.getElementById('flashcard-container').innerHTML = html;
+                document.getElementById('backToLibrary').setAttribute('data-question-index', questionIndex);
+                document.querySelector('.card-count').textContent = `${questionIndex + 1}`;
+
+                // Reset checkboxes
+                document.getElementById('correct-checkbox').checked = false;
+                document.getElementById('incorrect-checkbox').checked = false;
+
+            } catch (error) {
+                console.error('Error fetching next flashcard:', error);
+            }
+        }
+
+        //todo: fix routing etc
+        async function sendStatistics(questionId, isCorrect) {
+            try {
+                const response = await fetch('/InfiniteMode/15?handler=SubmitQuizResults', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': requestVerificationToken
+                    },
+                    body: JSON.stringify({ questionId, isCorrect })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log('Response data:', data);
+                return data.success;
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;
+            }
+        }
+        document.getElementById('backToLibrary').addEventListener('click', function () {
+            window.location.href = '/Library'; // Redirect to Library
+        });
+    </script>
+</body>

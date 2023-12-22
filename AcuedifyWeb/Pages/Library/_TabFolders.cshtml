@@ -13,7 +13,7 @@
                 <div class="folder-item mb-3">
                     <div class="folder-header" data-bs-toggle="collapse" data-bs-target="#folder_@folder.Id">
                         <span class="folder-icon"><i class="bi bi-folder"></i></span>
-                        <span class="folder-name text" >@folder.Name</span>
+                        <span class="folder-name text">@folder.Name</span>
                         <a asp-page="/Folders/Edit" asp-route-folderId=@folder.Id class="edit-folder">
                             <svg width="16" height="16" viewBox="0 0 16 16">
                                 <use xlink:href="Icons/Icons.svg#icon-edit"></use>
@@ -39,11 +39,12 @@
                                         <tr class="quiz-item">
                                             <td>
                                                 <div class="custom-div">
-                                                    <a asp-page="Index" asp-page-handler="ToggleFavorite" asp-route-id=@quiz.Id class="custom-link">
+                                                    <a href="#" class="custom-link toggle-favorite" data-id="@quiz.Id" data-isfavorite="@quiz.isFavorite">
                                                         <svg width="16" height="16" viewBox="0 0 16 16" class="bi bi-emoji-heart-eyes custom-icon @(quiz.isFavorite ? "favorite-heart" : "not-favorite-heart")">
                                                             <use xlink:href="Icons/Icons.svg#icon-heart" />
                                                         </svg>
                                                     </a>
+
                                                     <span class="text">@quiz.Title</span>
                                                 </div>
                                             </td>
@@ -100,9 +101,9 @@
             }
         }
     </div>
+   
+
 </body>
-
-
 
 
 

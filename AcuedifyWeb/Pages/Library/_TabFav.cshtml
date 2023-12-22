@@ -3,49 +3,55 @@
 }
 
 <div>
-	<h4 class="mb-4 mt-3">Favorite quizzes:</h4>
-	<table class="table quizzes-table mt-2" style="border: 1px solid #0067ce;">
-		<thead>
-			<tr>
-				<th width="20%" class="text">Title</th>
-				<th width="60%" class="text">Description</th>
-				<th width="20%" class="text">Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var quiz in Model.Favourites)
-			{
-				<tr class="quiz-item">
-					<td>
-						<div class="custom-div">
-							<a asp-page="Index" asp-page-handler="ToggleFavorite" asp-route-id=@quiz.Id class="custom-link">
-								<svg width="16" height="16" viewBox="0 0 16 16" class="bi bi-emoji-heart-eyes custom-icon @(quiz.isFavorite ? "favorite-heart" : "not-favorite-heart")">
-									<use xlink:href="Icons/Icons.svg#icon-heart" />
-								</svg>
-							</a>
-							<span class="text">@quiz.Title</span>
-						</div>
-					</td>
-					<td class="text">@quiz.Description</td>
-					<td>
-						<a asp-page="/Playing/Index" asp-route-quizId="@quiz.Id" class="btn btn-outline-success btn-sm">
-							<svg width="16" height="16" viewBox="0 0 16 16">
-								<use xlink:href="Icons/Icons.svg#icon-play"></use>
-							</svg>
-						</a>
-						<a aasp-page="/Quizzes/Edit" asp-route-id=@quiz.Id class="btn btn-outline-primary btn-sm">
-							<svg width="16" height="16" viewBox="0 0 16 16">
-								<use xlink:href="Icons/Icons.svg#icon-edit"></use>
-							</svg>
-						</a>
-						<a asp-page="DeleteQuiz" asp-route-id=@quiz.Id class="btn btn-outline-danger btn-sm">
-							<svg width="16" height="16" viewBox="0 0 16 16">
-								<use xlink:href="Icons/Icons.svg#icon-delete"></use>
-							</svg>
-						</a>
-					</td>
-				</tr>
-			}
-		</tbody>
-	</table>
+    <h4 class="mb-4 mt-3">Favorite quizzes:</h4>
+    <table class="table quizzes-table mt-2">
+        <thead>
+            <tr>
+                <th width="20%" class="text">Title</th>
+                <th width="60%" class="text">Description</th>
+                <th width="20%" class="text">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var quiz in Model.Favourites)
+            {
+                <tr class="quiz-item">
+                    <td>
+                        <div class="custom-div">
+                            <a href="#" class="custom-link toggle-favorite" data-id="@quiz.Id" data-isfavorite="@quiz.isFavorite">
+                                <svg width="16" height="16" viewBox="0 0 16 16" class="bi bi-emoji-heart-eyes custom-icon @(quiz.isFavorite ? "favorite-heart" : "not-favorite-heart")">
+                                    <use xlink:href="Icons/Icons.svg#icon-heart" />
+                                </svg>
+                            </a>
+
+                            <span class="text">@quiz.Title</span>
+                        </div>
+                    </td>
+                    <td class="text">@quiz.Description</td>
+                    <td>
+                        <a asp-page="/Playing/Index" asp-route-quizId="@quiz.Id" class="btn btn-outline-success btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <use xlink:href="Icons/Icons.svg#icon-play"></use>
+                            </svg>
+                        </a>
+                        <a aasp-page="/Quizzes/Edit" asp-route-id=@quiz.Id class="btn btn-outline-primary btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <use xlink:href="Icons/Icons.svg#icon-edit"></use>
+                            </svg>
+                        </a>
+                        <a asp-page="DeleteQuiz" asp-route-id=@quiz.Id class="btn btn-outline-danger btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <use xlink:href="Icons/Icons.svg#icon-delete"></use>
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
+
+
+
+
+
