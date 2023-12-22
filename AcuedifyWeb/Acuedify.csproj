@@ -14,14 +14,14 @@
     <None Remove="Services\Authorization\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Controllers\LibraryController.cs" />
-    <Compile Remove="Controllers\PlayingController.cs" />
-    <Compile Remove="Controllers\QuizzesController.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Remove="wwwroot\js\quiz.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Include="Pages\Shared\logoblu.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +50,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\" />
+    <Folder Include="NewFolder\" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
   </ItemGroup>
 

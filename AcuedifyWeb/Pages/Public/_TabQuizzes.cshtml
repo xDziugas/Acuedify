@@ -9,7 +9,7 @@
 </head>
 <body>
     <div>
-        <table class="table quizzes-table mt-2">
+        <table class="table quizzes-table mt-2" style="border: 1px solid #0067ce;">
             <thead>
                 <tr>
                     <th width="20%" class="text">Title</th>
@@ -17,29 +17,39 @@
                     <th width="20%" class="text">Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach (var quiz in Model.Quizzes)
-                {
-                    if (quiz.FolderId != null) continue;
-                    <tr class="quiz-item">
-                        <td>
-                            <div class="custom-div">
-
-                                <span class="text">@quiz.Title</span>
-                            </div>
-                        </td>
-                        <td class="text">@quiz.Description</td>
-                        <td>
-                            <a asp-page="/Playing/Index" asp-route-quizId="@quiz.Id" asp-route-questionId=0 class="action btn-outline-success btn-sm">
-                                <svg width="16" height="16" viewBox="0 0 16 16">
-                                    <use xlink:href="Icons/Icons.svg#icon-play"></use>
-                                </svg>
-                            </a>
-                        </td>
-                    </tr>
-                }
+            <tbody id="quizTableBody">
             </tbody>
         </table>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $.getJSON('/api/MainAPI', function (quizzes) {
+                $.each(quizzes, function (i, quiz) {
+                    var quizHtml = `
+                                <tr class="quiz-item">
+                                    <td>
+                                        <div class="custom-div">
+                                            <span class="text">${quiz.title}</span>
+                                        </div>
+                                    </td>
+                                    <td class="text">${quiz.description}</td>
+                                    <td>
+                                        <a href="/Playing?quizId=${quiz.id}&questionId=0" class="action btn-outline-success btn-sm">
+                                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                                <use xlink:href="Icons/Icons.svg#icon-play"></use>
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </tr>`;
+                    $('#quizTableBody').append(quizHtml);
+                });
+            });
+        });
+    </script>
 
 </body>
+
+
+
