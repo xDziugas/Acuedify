@@ -11,12 +11,26 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Acuedify.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" type="text/css" href="~/css/StyleSheetLibrary.css">
+    <style>
+        body {
+            font-size: 1.2rem;
+            background-image: url('Icons/backg.jpg');
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom-acustom box-shadow mb-3" style="border-bottom: 3px solid #5999ff !important;" ;>
+            <a asp-area="" asp-page="/Index">
+                <img src=@Url.Content("~/Icons/logoblu.jpg") style="
+                            height: 2.5rem;
+                            position: relative;
+                            padding-left: 10%;
+                    ">
+            </a>
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Acuedify</a>
+                
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

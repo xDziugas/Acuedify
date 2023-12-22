@@ -130,14 +130,14 @@ html {
 }
 
 .action {
-    border: 1px solid #666666;
+    border: 1px solid #666666;background-image:url('images/background.png');
 }
 
 
 /*------------------------------folders-----------------------*/
 .library-folders .folder-item {
     background-color: #f7f7f7;
-    border: 1px solid #ddd;
+    border: 1px solid #7fb0ff;
     border-radius: 5px;
 }
 
@@ -191,7 +191,7 @@ html {
     .quizzes-table th,
     .quizzes-table td {
         padding: 8px;
-        border: 1px solid #dee2e6;
+        border: 1px solid #7fb0ff;
         text-align: left;
     }
 
@@ -266,3 +266,8 @@ html {
 
 
 
+/*--------------------------------LAYOUT-----------------------------------------*/
+
+.border-bottom-acustom {
+    border-bottom: 3px solid #007fff !important;
+}
