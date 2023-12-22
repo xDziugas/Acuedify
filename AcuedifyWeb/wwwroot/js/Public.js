@@ -1,7 +1,7 @@
 let timeout = null;
-const searchBar = document.getElementById('publicsearchBar');
-const searchResultsDiv = document.getElementById('publicsearchResults');
-const regularContentDiv = document.getElementById('publicregularContent');
+const searchBar = document.getElementById('publicSearchBar');
+const searchResultsDiv = document.getElementById('publicSearchResults');
+const regularContentDiv = document.getElementById('regularContent');
 
 searchBar.addEventListener('keyup', function (e) {
     if (e.key === 'Enter') {
