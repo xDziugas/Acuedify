@@ -264,6 +264,44 @@ html {
 }
 
 
+.tooltipplay {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+    .tooltipplay .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: rgba(255, 255, 255, 0.8);
+        color: black;
+        text-align: center;
+        padding: 3px 0;
+        border-radius: 6px;
+        border: 1px solid #444444;
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s, visibility 0.3s ease-in-out;
+        transform: translateY(-10px);
+        font-size: 0.8em; /* Smaller font size */
+    }
+
+    .tooltipplay:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(-15px); 
+    }
+
+.custom-div {
+    display: flex;
+    align-items: center; 
+}
+
+
 
 
 /*--------------------------------LAYOUT-----------------------------------------*/

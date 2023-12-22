@@ -201,6 +201,12 @@
                 e.preventDefault();
                 const quizId = e.target.getAttribute('data-quiz-id');
 
+                const correctCheckbox = document.getElementById('correct-checkbox');
+                const incorrectCheckbox = document.getElementById('incorrect-checkbox');
+
+                if (correctCheckbox.checked) correctCount++;
+                if (incorrectCheckbox.checked) incorrectCount++;
+
                 try {
                     const success = await sendStatistics(quizId, correctCount, incorrectCount);
                     if (success) {

@@ -47,6 +47,10 @@ namespace Acuedify.Pages.Library
 
             Folders = await _folderService.FindUserFolders(userId);
             Quizzes = _libraryService.GetUserQuizzes(userId);
+            foreach(Quiz quiz in Quizzes)
+            {
+                quiz.Questions = _libraryService.GetQuizQuestions(quiz.Id);
+            }
             var favourites = new List<Quiz>();
 
             if (Quizzes == null)

@@ -1,7 +1,6 @@
 @model IndexModel
 
 @{
-
 }
 
 <head>
@@ -31,8 +30,14 @@
                                     </svg>
                                 </a>
 
+                                <div class="tooltipplay">
+                                    <span class="text">@quiz.Title</span>
+                                    <span class="tooltiptext">
+                                        Played: @quiz.TimesSolved <br>
+                                        Average: @(quiz.PastScores.Any() ? (quiz.PastScores.Average() / quiz.Questions.Count * 100).ToString("F2") : 0)%
+                                    </span>
+                                </div>
 
-                                <span class="text">@quiz.Title</span>
                             </div>
                         </td>
                         <td class="text">@quiz.Description</td>
