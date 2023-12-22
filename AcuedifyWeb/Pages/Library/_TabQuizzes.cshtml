@@ -25,11 +25,13 @@
                     <tr class="quiz-item">
                         <td>
                             <div class="custom-div">
-                                <a asp-page="Index" asp-page-handler="ToggleFavorite" asp-route-id=@quiz.Id class="custom-link">
+                                <a href="#" class="custom-link toggle-favorite" data-id="@quiz.Id" data-isfavorite="@quiz.isFavorite">
                                     <svg width="16" height="16" viewBox="0 0 16 16" class="bi bi-emoji-heart-eyes custom-icon @(quiz.isFavorite ? "favorite-heart" : "not-favorite-heart")">
                                         <use xlink:href="Icons/Icons.svg#icon-heart" />
                                     </svg>
                                 </a>
+
+
                                 <span class="text">@quiz.Title</span>
                             </div>
                         </td>
@@ -80,5 +82,7 @@
             </tbody>
         </table>
     </div>
-
+    
 </body>
+
+

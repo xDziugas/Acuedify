@@ -16,17 +16,27 @@ namespace Acuedify.Services.Playing
             return details;
         }
 
-        PlayDetails IPlayingService.GetFromSession(string SessionKey, ISession session)
+        T IPlayingService.GetFromSession<T>(string SessionKey, ISession session)
         {
-            return session.GetObject<PlayDetails>(SessionKey);
+            return session.GetObject<T>(SessionKey);
         }
 
-        void IPlayingService.SetToSession(string SessionKey, PlayDetails details, ISession session)
+        void IPlayingService.SetToSession<T>(string SessionKey, T details, ISession session)
         {
             session.SetObject(SessionKey, details);
         }
 
         bool IPlayingService.isValid(PlayDetails details)
+        {
+            if (details == null || details.Quiz == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        bool IPlayingService.isValid(QuizStatistics details)
         {
             if (details == null || details.Quiz == null)
             {
@@ -45,7 +55,41 @@ namespace Acuedify.Services.Playing
 
         List<Question> IPlayingService.ShuffleByDifficulty(List<Question> flashcards)
         {
-            return flashcards.OrderBy(question => question.Difficulty).ToList();
+            return flashcards.OrderByDescending(question => question.Difficulty).ToList();
+        }
+
+        QuizStatistics IPlayingService.InitQuizStatistics(Quiz flashcardSet, List<Question> flashcards)
+        {
+            QuizStatistics stats = new QuizStatistics();
+            stats.Questions = flashcards;
+            stats.Quiz = flashcardSet;
+
+            foreach (Question question in flashcards)
+            {
+                stats.Weight.Add(1.0);
+            }
+
+            return stats;
+        }
+
+        QuizStatistics IPlayingService.UpdateWeight(QuizStatistics stats, int questionId, bool isCorrect)
+        {
+            //todo: add constants?
+            if (isCorrect)
+            {
+                stats.Weight[questionId] *= 0.9;
+            }
+            else
+            {
+                stats.Weight[questionId] *= 1.1;
+            }
+
+            if (stats.Weight[questionId] < 0.1)
+            {
+                stats.Weight[questionId] = 0.1;
+            }
+
+            return stats;
         }
     }
 }

@@ -13,6 +13,7 @@ using Acuedify.Services.Auth.Interfaces;
 using Acuedify.Services.Auth;
 using Acuedify.Services.Error.Interfaces;
 using Acuedify.Services.Error;
+using Acuedify.Models.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,20 +61,33 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
 });
 
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true; 
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.Secure = CookieSecurePolicy.Always;
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
     app.UseHsts();
 }
+else
+{
+    app.UseDeveloperExceptionPage();
+    app.UseHttpsRedirection();
+}
 
-
+app.UseMiddleware<LoggingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseCookiePolicy();
 
 app.UseSession();
 
